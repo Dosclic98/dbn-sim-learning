@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file was created by ACADEMIC version of SMILE -->
+<smile version="1.0" id="Network1" numsamples="10000" discsamples="10000">
+	<nodes>
+		<cpt id="DMZ_scanIP" dynamic="plate">
+			<state id="N" />
+			<state id="C" />
+			<probabilities>0.995049504950495 0.004950495049504951</probabilities>
+		</cpt>
+		<cpt id="workStation_compromise" dynamic="plate">
+			<state id="N" />
+			<state id="C" />
+			<probabilities>0.002567282878116235 0.9974327171218837</probabilities>
+		</cpt>
+		<cpt id="historianServer_addSSHkey" dynamic="plate">
+			<state id="N" />
+			<state id="C" />
+			<probabilities>0.9940338939937921 0.005966106006207975</probabilities>
+		</cpt>
+		<cpt id="historianServer_remoteShellAND" dynamic="plate">
+			<state id="N" />
+			<state id="C" />
+			<parents>workStation_compromise historianServer_addSSHkey</parents>
+			<probabilities>1 0 1 0 1 0 0 1</probabilities>
+		</cpt>
+		<cpt id="historian_scanVuln" dynamic="plate">
+			<state id="N" />
+			<state id="C" />
+			<probabilities>0.9948976735448269 0.00510232645517306</probabilities>
+		</cpt>
+		<cpt id="historian_remoteSrvc" dynamic="plate">
+			<state id="N" />
+			<state id="C" />
+			<probabilities>0.9949344172481706 0.005065582751829554</probabilities>
+		</cpt>
+		<cpt id="historianServer_shell" dynamic="plate">
+			<state id="N" />
+			<state id="C" />
+			<probabilities>0.995044299765697 0.004955700234303086</probabilities>
+		</cpt>
+		<cpt id="historianServer_remoteShell" dynamic="plate">
+			<state id="N" />
+			<state id="C" />
+			<probabilities>0.6762922923800851 0.3237077076199149</probabilities>
+		</cpt>
+		<cpt id="historianServer_NodeOR1" dynamic="plate">
+			<state id="N" />
+			<state id="C" />
+			<parents>historianServer_shell historianServer_remoteShell</parents>
+			<probabilities>1 0 0 1 0 1 0 1</probabilities>
+		</cpt>
+		<cpt id="MMSclient1_modAuthProc" dynamic="plate">
+			<state id="N" />
+			<state id="C" />
+			<probabilities>0.8484382634855878 0.1515617365144121</probabilities>
+		</cpt>
+		<cpt id="MMSclient1_unsecCred" dynamic="plate">
+			<state id="N" />
+			<state id="C" />
+			<probabilities>0.8549797447100052 0.1450202552899949</probabilities>
+		</cpt>
+		<cpt id="MMSclient1_AND52" dynamic="plate">
+			<state id="N" />
+			<state id="C" />
+			<parents>MMSclient1_modAuthProc MMSclient1_unsecCred</parents>
+			<probabilities>1 0 1 0 1 0 0 1</probabilities>
+		</cpt>
+		<cpt id="tomcatWebServer_bruteForce" dynamic="plate">
+			<state id="N" />
+			<state id="C" />
+			<probabilities>0.9924620984917728 0.007537901508227182</probabilities>
+		</cpt>
+		<cpt id="virtualEng_escapeHost" dynamic="plate">
+			<state id="N" />
+			<state id="C" />
+			<probabilities>0.9948829110292632 0.005117088970736885</probabilities>
+		</cpt>
+		<cpt id="stationComputer_shell" dynamic="plate">
+			<state id="N" />
+			<state id="C" />
+			<probabilities>0.9950246400755605 0.004975359924439603</probabilities>
+		</cpt>
+		<cpt id="MMSclient1_credAcc" dynamic="plate">
+			<state id="N" />
+			<state id="C" />
+			<probabilities>0.9950493625292186 0.004950637470781356</probabilities>
+		</cpt>
+		<cpt id="MMSserver1_AITM" dynamic="plate">
+			<state id="N" />
+			<state id="C" />
+			<probabilities>0.9950495049463778 0.004950495053622301</probabilities>
+		</cpt>
+		<cpt id="MMSserver1_spoofRepMsg" dynamic="plate">
+			<state id="N" />
+			<state id="C" />
+			<probabilities>0.5003321034426453 0.4996678965573546</probabilities>
+		</cpt>
+		<cpt id="MMSserver1_unauthCmdMsg" dynamic="plate">
+			<state id="N" />
+			<state id="C" />
+			<probabilities>0.5003321034426453 0.4996678965573546</probabilities>
+		</cpt>
+		<cpt id="MMSserver1_NodeAND23" dynamic="plate">
+			<state id="N" />
+			<state id="C" />
+			<parents>MMSserver1_unauthCmdMsg MMSserver1_spoofRepMsg</parents>
+			<probabilities>1 0 1 0 1 0 0 1</probabilities>
+		</cpt>
+		<cpt id="IED1_DERfailure" dynamic="plate">
+			<state id="N" />
+			<state id="C" />
+			<probabilities>0.5 0.5</probabilities>
+		</cpt>
+	</nodes>
+	<dynamic numslices="300">
+		<cpt id="DMZ_scanIP" order="1">
+			<parents>workStation_compromise</parents>
+			<probabilities>0.9935501392639747 0.006449860736025229 0.009385438645951394 0.9906145613540486</probabilities>
+		</cpt>
+		<cpt id="historianServer_addSSHkey" order="1">
+			<parents>historianServer_shell</parents>
+			<probabilities>0.99977053688819 0.0002294631118100908 0.028074449225816 0.9719255507741841</probabilities>
+		</cpt>
+		<cpt id="historian_scanVuln" order="1">
+			<parents>DMZ_scanIP</parents>
+			<probabilities>0.7796052631578947 0.2203947368421053 1.703809718607339e-05 0.999982961902814</probabilities>
+		</cpt>
+		<cpt id="historian_remoteSrvc" order="1">
+			<parents>historian_scanVuln</parents>
+			<probabilities>0.9989034718964305 0.001096528103569594 0.02986829132632147 0.9701317086736786</probabilities>
+		</cpt>
+		<cpt id="historianServer_shell" order="1">
+			<parents>historian_remoteSrvc</parents>
+			<probabilities>0.9996508351545793 0.0003491648454207811 0.02282380538178253 0.9771761946182175</probabilities>
+		</cpt>
+		<cpt id="historianServer_remoteShell" order="1">
+			<parents>historianServer_remoteShellAND</parents>
+			<probabilities>0.9998362797421261 0.0001637202578740303 0.01276768659313911 0.9872323134068609</probabilities>
+		</cpt>
+		<cpt id="MMSclient1_modAuthProc" order="1">
+			<parents>stationComputer_shell</parents>
+			<probabilities>0.9999535013376012 4.649866239882138e-05 0.07021378208948699 0.929786217910513</probabilities>
+		</cpt>
+		<cpt id="MMSclient1_unsecCred" order="1">
+			<parents>stationComputer_shell</parents>
+			<probabilities>0.9999535013376012 4.649866239882138e-05 0.07152618676711237 0.9284738132328876</probabilities>
+		</cpt>
+		<cpt id="tomcatWebServer_bruteForce" order="1">
+			<parents>historianServer_NodeOR1</parents>
+			<probabilities>0.9983937438063711 0.001606256193628873 0.03708935789866086 0.9629106421013391</probabilities>
+		</cpt>
+		<cpt id="virtualEng_escapeHost" order="1">
+			<parents>tomcatWebServer_bruteForce</parents>
+			<probabilities>0.9998484728490016 0.0001515271509985592 0.2492905067253288 0.7507094932746712</probabilities>
+		</cpt>
+		<cpt id="stationComputer_shell" order="1">
+			<parents>virtualEng_escapeHost</parents>
+			<probabilities>0.9999500298979817 4.997010201841293e-05 0.03270945020956623 0.9672905497904337</probabilities>
+		</cpt>
+		<cpt id="MMSclient1_credAcc" order="1">
+			<parents>MMSclient1_AND52</parents>
+			<probabilities>0.9918728771861253 0.008127122813874671 2.868136883454745e-05 0.9999713186311654</probabilities>
+		</cpt>
+		<cpt id="MMSserver1_AITM" order="1">
+			<parents>MMSclient1_credAcc</parents>
+			<probabilities>0.9918728772346025 0.00812712276539747 2.867712694224269e-05 0.9999713228730577</probabilities>
+		</cpt>
+		<cpt id="MMSserver1_spoofRepMsg" order="1">
+			<parents>MMSserver1_AITM</parents>
+			<probabilities>0.9918728772440559 0.008127122755943987 2.86763019624457e-05 0.9999713236980375</probabilities>
+		</cpt>
+		<cpt id="MMSserver1_unauthCmdMsg" order="1">
+			<parents>MMSserver1_AITM</parents>
+			<probabilities>0.9918728772440559 0.008127122755943987 2.86763019624457e-05 0.9999713236980375</probabilities>
+		</cpt>
+		<cpt id="IED1_DERfailure" order="1">
+			<parents>MMSserver1_NodeAND23</parents>
+			<probabilities>0.9999594026093787 4.059739062133083e-05 0.999971405593756 2.859440624391315e-05</probabilities>
+		</cpt>
+	</dynamic>
+	<extensions>
+		<genie version="1.0" app="SMILE_ACADEMIC 2.4.0@070aab1774fd" name="DBNfromAG">
+			<plate leftwidth="120" rightwidth="120">20 30 1648 895</plate>
+			<node id="DMZ_scanIP">
+				<name>DMZ_scanIP</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="MS Sans Serif" size="8" />
+				<position>399 149 558 197</position>
+			</node>
+			<node id="workStation_compromise">
+				<name>workStation_compromise</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="MS Sans Serif" size="8" />
+				<position>176 114 335 162</position>
+			</node>
+			<node id="historianServer_addSSHkey">
+				<name>historianServer_addSSHkey</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="MS Sans Serif" size="8" />
+				<position>507 282 666 330</position>
+			</node>
+			<node id="historianServer_remoteShellAND">
+				<name>historianServer_remoteShellAND</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="MS Sans Serif" size="8" />
+				<position>202 251 397 294</position>
+			</node>
+			<node id="historian_scanVuln">
+				<name>historian_scanVuln</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="MS Sans Serif" size="8" />
+				<position>596 198 755 246</position>
+			</node>
+			<node id="historian_remoteSrvc">
+				<name>historian_remoteSrvc</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="MS Sans Serif" size="8" />
+				<position>765 253 924 301</position>
+			</node>
+			<node id="historianServer_shell">
+				<name>historianServer_shell</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="MS Sans Serif" size="8" />
+				<position>858 333 1017 381</position>
+			</node>
+			<node id="historianServer_remoteShell">
+				<name>historianServer_remoteShell</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="MS Sans Serif" size="8" />
+				<position>454 372 613 420</position>
+			</node>
+			<node id="historianServer_NodeOR1">
+				<name>historianServer_NodeOR1</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="MS Sans Serif" size="8" />
+				<position>700 389 859 437</position>
+			</node>
+			<node id="MMSclient1_modAuthProc">
+				<name>MMSclient1_modAuthProc</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="MS Sans Serif" size="8" />
+				<position>910 687 1069 735</position>
+			</node>
+			<node id="MMSclient1_unsecCred">
+				<name>MMSclient1_unsecCred</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="MS Sans Serif" size="8" />
+				<position>1159 678 1318 726</position>
+			</node>
+			<node id="MMSclient1_AND52">
+				<name>MMSclient1_AND52</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="MS Sans Serif" size="8" />
+				<position>1054 756 1213 804</position>
+			</node>
+			<node id="tomcatWebServer_bruteForce">
+				<name>tomcatWebServer_bruteForce</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="MS Sans Serif" size="8" />
+				<position>794 477 953 525</position>
+			</node>
+			<node id="virtualEng_escapeHost">
+				<name>virtualEng_escapeHost</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="MS Sans Serif" size="8" />
+				<position>874 547 1033 595</position>
+			</node>
+			<node id="stationComputer_shell">
+				<name>stationComputer_shell</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="MS Sans Serif" size="8" />
+				<position>984 618 1143 666</position>
+			</node>
+			<node id="MMSclient1_credAcc">
+				<name>MMSclient1_credAcc</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="MS Sans Serif" size="8" />
+				<position>847 787 1006 835</position>
+			</node>
+			<node id="MMSserver1_AITM">
+				<name>MMSserver1_AITM</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="MS Sans Serif" size="8" />
+				<position>627 756 786 804</position>
+			</node>
+			<node id="MMSserver1_spoofRepMsg">
+				<name>MMSserver1_spoofRepMsg</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="MS Sans Serif" size="8" />
+				<position>404 771 563 819</position>
+			</node>
+			<node id="MMSserver1_unauthCmdMsg">
+				<name>MMSserver1_unauthCmdMsg</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="MS Sans Serif" size="8" />
+				<position>502 661 661 709</position>
+			</node>
+			<node id="MMSserver1_NodeAND23">
+				<name>MMSserver1_NodeAND23</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="MS Sans Serif" size="8" />
+				<position>288 672 447 720</position>
+			</node>
+			<node id="IED1_DERfailure">
+				<name>IED1_DERfailure</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="MS Sans Serif" size="8" />
+				<position>206 564 365 612</position>
+			</node>
+		</genie>
+	</extensions>
+</smile>
