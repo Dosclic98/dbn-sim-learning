@@ -10,7 +10,7 @@
 		<cpt id="workStation_compromise" dynamic="plate">
 			<state id="N" />
 			<state id="C" />
-			<probabilities>0.01943507061617298 0.9805649293838269</probabilities>
+			<probabilities>0.01554844515548445 0.9844515548445156</probabilities>
 		</cpt>
 		<cpt id="historianServer_addSSHkey" dynamic="plate">
 			<state id="N" />
@@ -112,70 +112,70 @@
 			<probabilities>0.995049504950495 0.004950495049504951</probabilities>
 		</cpt>
 	</nodes>
-	<dynamic numslices="80">
+	<dynamic numslices="100">
 		<cpt id="DMZ_scanIP" order="1">
 			<parents>workStation_compromise</parents>
-			<probabilities>0.9967948717948718 0.003205128205128205 0.0258843273947844 0.9741156726052155</probabilities>
+			<probabilities>0.9967948717948718 0.003205128205128205 0.02057254258157193 0.9794274574184281</probabilities>
 		</cpt>
 		<cpt id="historianServer_addSSHkey" order="1">
 			<parents>historianServer_shell</parents>
-			<probabilities>0.9997705369435521 0.0002294630564479119 0.1355058535733007 0.8644941464266992</probabilities>
+			<probabilities>0.9997705369435521 0.0002294630564479119 0.1004143467564418 0.8995856532435581</probabilities>
 		</cpt>
 		<cpt id="historian_scanVuln" order="1">
 			<parents>DMZ_scanIP</parents>
-			<probabilities>0.7796052631578947 0.2203947368421053 6.715014773032501e-05 0.9999328498522697</probabilities>
+			<probabilities>0.7796052631578947 0.2203947368421053 5.293245818335804e-05 0.9999470675418166</probabilities>
 		</cpt>
 		<cpt id="historian_remoteSrvc" order="1">
 			<parents>historian_scanVuln</parents>
-			<probabilities>0.9989035087719298 0.001096491228070175 0.1177142089712597 0.8822857910287403</probabilities>
+			<probabilities>0.9989035087719298 0.001096491228070175 0.09279059919542663 0.9072094008045734</probabilities>
 		</cpt>
 		<cpt id="historianServer_shell" order="1">
 			<parents>historian_remoteSrvc</parents>
-			<probabilities>0.9996508379888268 0.0003491620111731844 0.1000772797527048 0.8999227202472952</probabilities>
+			<probabilities>0.9996508379888268 0.0003491620111731844 0.07644628099173555 0.9235537190082646</probabilities>
 		</cpt>
 		<cpt id="historianServer_remoteShell" order="1">
 			<parents>historianServer_remoteShellAND</parents>
-			<probabilities>0.9998362802881468 0.0001637197118533071 0.07044141914191419 0.9295585808580858</probabilities>
+			<probabilities>0.9998362802881468 0.0001637197118533071 0.04986857476635514 0.9501314252336448</probabilities>
 		</cpt>
 		<cpt id="MMSclient1_modAuthProc" order="1">
 			<parents>stationComputer_shell</parents>
-			<probabilities>0.9999320005439957 6.799945600435197e-05 0.6147540983606558 0.3852459016393442</probabilities>
+			<probabilities>0.9999408354040942 5.916459590580997e-05 0.4303928325292901 0.5696071674707098</probabilities>
 		</cpt>
 		<cpt id="MMSclient1_unsecCred" order="1">
 			<parents>stationComputer_shell</parents>
-			<probabilities>0.9999320005439957 6.799945600435197e-05 0.6621129326047359 0.3378870673952641</probabilities>
+			<probabilities>0.9999408354040942 5.916459590580997e-05 0.449000689179876 0.5509993108201241</probabilities>
 		</cpt>
 		<cpt id="tomcatWebServer_bruteForce" order="1">
 			<parents>historianServer_NodeOR1</parents>
-			<probabilities>0.9983937586048647 0.001606241395135383 0.1790145028831032 0.8209854971168967</probabilities>
+			<probabilities>0.9983937586048647 0.001606241395135383 0.1326557037420691 0.8673442962579309</probabilities>
 		</cpt>
 		<cpt id="virtualEng_escapeHost" order="1">
 			<parents>tomcatWebServer_bruteForce</parents>
-			<probabilities>0.9998484848484849 0.0001515151515151515 0.8091047370708389 0.1908952629291613</probabilities>
+			<probabilities>0.9998484848484849 0.0001515151515151515 0.7041048167222054 0.2958951832777946</probabilities>
 		</cpt>
 		<cpt id="stationComputer_shell" order="1">
 			<parents>virtualEng_escapeHost</parents>
-			<probabilities>0.9999292185730465 7.078142695356739e-05 0.3025059665871122 0.6974940334128878</probabilities>
+			<probabilities>0.9999375858194981 6.241418050181001e-05 0.2033315705975674 0.7966684294024325</probabilities>
 		</cpt>
 		<cpt id="MMSclient1_credAcc" order="1">
 			<parents>MMSclient1_AND52</parents>
-			<probabilities>0.9977428092351347 0.002257190764865213 0.003355704697986577 0.9966442953020134</probabilities>
+			<probabilities>0.9958120308930708 0.004187969106929186 0.0007052186177715092 0.9992947813822285</probabilities>
 		</cpt>
 		<cpt id="MMSserver1_AITM" order="1">
 			<parents>MMSclient1_credAcc</parents>
-			<probabilities>0.9977428092351347 0.002257190764865213 0.003355704697986577 0.9966442953020134</probabilities>
+			<probabilities>0.9958120308930708 0.004187969106929186 0.0007052186177715092 0.9992947813822285</probabilities>
 		</cpt>
 		<cpt id="MMSserver1_spoofRepMsg" order="1">
 			<parents>MMSserver1_AITM</parents>
-			<probabilities>0.9977428092351347 0.002257190764865213 0.003355704697986577 0.9966442953020134</probabilities>
+			<probabilities>0.9958120308930708 0.004187969106929186 0.0007052186177715092 0.9992947813822285</probabilities>
 		</cpt>
 		<cpt id="MMSserver1_unauthCmdMsg" order="1">
 			<parents>MMSserver1_AITM</parents>
-			<probabilities>0.9977428092351347 0.002257190764865213 0.003355704697986577 0.9966442953020134</probabilities>
+			<probabilities>0.9958120308930708 0.004187969106929186 0.0007052186177715092 0.9992947813822285</probabilities>
 		</cpt>
 		<cpt id="IED1_DERfailure" order="1">
 			<parents>MMSserver1_NodeAND23</parents>
-			<probabilities>0.9977428092351347 0.002257190764865213 0.003355704697986577 0.9966442953020134</probabilities>
+			<probabilities>0.9958120308930708 0.004187969106929186 0.0007052186177715092 0.9992947813822285</probabilities>
 		</cpt>
 	</dynamic>
 	<extensions>
