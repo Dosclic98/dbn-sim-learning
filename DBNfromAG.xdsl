@@ -114,64 +114,68 @@
 	</nodes>
 	<dynamic numslices="60">
 		<cpt id="DMZ_scanIP" order="1">
+			<parents>workStation_compromise DMZ_scanIP</parents>
+			<probabilities>0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5</probabilities>
+		</cpt>
+		<cpt id="workStation_compromise" order="1">
 			<parents>workStation_compromise</parents>
 			<probabilities>0.5 0.5 0.5 0.5</probabilities>
 		</cpt>
 		<cpt id="historianServer_addSSHkey" order="1">
-			<parents>historianServer_shell</parents>
-			<probabilities>0.5 0.5 0.5 0.5</probabilities>
+			<parents>historianServer_shell historianServer_addSSHkey</parents>
+			<probabilities>0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5</probabilities>
 		</cpt>
 		<cpt id="historian_scanVuln" order="1">
-			<parents>DMZ_scanIP</parents>
-			<probabilities>0.5 0.5 0.5 0.5</probabilities>
+			<parents>DMZ_scanIP historian_scanVuln</parents>
+			<probabilities>0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5</probabilities>
 		</cpt>
 		<cpt id="historian_remoteSrvc" order="1">
-			<parents>historian_scanVuln</parents>
-			<probabilities>0.5 0.5 0.5 0.5</probabilities>
+			<parents>historian_scanVuln historian_remoteSrvc</parents>
+			<probabilities>0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5</probabilities>
 		</cpt>
 		<cpt id="historianServer_shell" order="1">
-			<parents>historian_remoteSrvc</parents>
-			<probabilities>0.5 0.5 0.5 0.5</probabilities>
+			<parents>historian_remoteSrvc historianServer_shell</parents>
+			<probabilities>0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5</probabilities>
 		</cpt>
 		<cpt id="historianServer_remoteShell" order="1">
-			<parents>historianServer_remoteShellAND</parents>
-			<probabilities>0.5 0.5 0.5 0.5</probabilities>
+			<parents>historianServer_remoteShellAND historianServer_remoteShell</parents>
+			<probabilities>0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5</probabilities>
 		</cpt>
 		<cpt id="MMSclient1_modAuthProc" order="1">
-			<parents>stationComputer_shell</parents>
-			<probabilities>0.5 0.5 0.5 0.5</probabilities>
+			<parents>stationComputer_shell MMSclient1_modAuthProc</parents>
+			<probabilities>0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5</probabilities>
 		</cpt>
 		<cpt id="MMSclient1_unsecCred" order="1">
-			<parents>stationComputer_shell</parents>
-			<probabilities>0.5 0.5 0.5 0.5</probabilities>
+			<parents>stationComputer_shell MMSclient1_unsecCred</parents>
+			<probabilities>0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5</probabilities>
 		</cpt>
 		<cpt id="tomcatWebServer_bruteForce" order="1">
-			<parents>historianServer_NodeOR1</parents>
-			<probabilities>0.5 0.5 0.5 0.5</probabilities>
+			<parents>historianServer_NodeOR1 tomcatWebServer_bruteForce</parents>
+			<probabilities>0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5</probabilities>
 		</cpt>
 		<cpt id="virtualEng_escapeHost" order="1">
-			<parents>tomcatWebServer_bruteForce</parents>
-			<probabilities>0.5 0.5 0.5 0.5</probabilities>
+			<parents>tomcatWebServer_bruteForce virtualEng_escapeHost</parents>
+			<probabilities>0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5</probabilities>
 		</cpt>
 		<cpt id="stationComputer_shell" order="1">
-			<parents>virtualEng_escapeHost</parents>
-			<probabilities>0.5 0.5 0.5 0.5</probabilities>
+			<parents>virtualEng_escapeHost stationComputer_shell</parents>
+			<probabilities>0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5</probabilities>
 		</cpt>
 		<cpt id="MMSclient1_credAcc" order="1">
-			<parents>MMSclient1_AND52</parents>
-			<probabilities>0.5 0.5 0.5 0.5</probabilities>
+			<parents>MMSclient1_AND52 MMSclient1_credAcc</parents>
+			<probabilities>0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5</probabilities>
 		</cpt>
 		<cpt id="MMSserver1_AITM" order="1">
-			<parents>MMSclient1_credAcc</parents>
-			<probabilities>0.5 0.5 0.5 0.5</probabilities>
+			<parents>MMSclient1_credAcc MMSserver1_AITM</parents>
+			<probabilities>0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5</probabilities>
 		</cpt>
 		<cpt id="MMSserver1_spoofRepMsg" order="1">
-			<parents>MMSserver1_AITM</parents>
-			<probabilities>0.5 0.5 0.5 0.5</probabilities>
+			<parents>MMSserver1_AITM MMSserver1_spoofRepMsg</parents>
+			<probabilities>0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5</probabilities>
 		</cpt>
 		<cpt id="MMSserver1_unauthCmdMsg" order="1">
-			<parents>MMSserver1_AITM</parents>
-			<probabilities>0.5 0.5 0.5 0.5</probabilities>
+			<parents>MMSserver1_AITM MMSserver1_unauthCmdMsg</parents>
+			<probabilities>0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5</probabilities>
 		</cpt>
 		<cpt id="IED1_DERfailure" order="1">
 			<parents>MMSserver1_NodeAND23</parents>
@@ -186,7 +190,7 @@
 				<interior color="e5f6f7" />
 				<outline color="000080" />
 				<font color="000000" name="Arial" size="8" />
-				<position>399 149 558 197</position>
+				<position>385 152 544 200</position>
 			</node>
 			<node id="workStation_compromise">
 				<name>workStation_compromise</name>
@@ -207,7 +211,7 @@
 				<interior color="e5f6f7" />
 				<outline color="000080" />
 				<font color="000000" name="Arial" size="8" />
-				<position>596 198 755 246</position>
+				<position>587 201 746 249</position>
 			</node>
 			<node id="historian_remoteSrvc">
 				<name>historian_remoteSrvc</name>
