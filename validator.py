@@ -6,17 +6,25 @@ import numpy as np
 
 class Validator:
 
-    def __init__(self, net: Network, fileName: str, fixedNodes: List[str] | List[int] | None):
+    def __init__(self, net: Network, fileName: str, fixedNodes: List[str] | List[int] | None,  evEveryN: int = 1):
         self.net: Network = net
         self.fileName = fileName
         self.classNodes: set[str] = set()
         self.fixedNodes: List[str] | List[int] | None = fixedNodes 
+        self.evEveryN = evEveryN
 
+    def get_ev_every_n_slices(self) -> int:
+        return self.evEveryN
+    
+    def set_ev_every_n_slices(self, n: int) -> None:
+        if n < 1:
+            raise Exception("evEveryNSlices must be at least 1")
+        self.evEveryN = n
 
     def addClassNode(self, classNode: str):
         self.classNodes.add(classNode)
 
-    def kFold(self, nFolds: int = 5):
+    def kFold(self, nFolds: int = 5) -> pd.DataFrame:
         em = EM()
         em.set_uniformize_parameters(True)
         em.set_randomize_parameters(False)
@@ -46,7 +54,20 @@ class Validator:
         print(f"Average F1-score: {np.mean(f1Vec):.4f} ± {np.std(f1Vec):.4f}")
         print(f"Average MCC: {np.mean(mccVec):.4f} ± {np.std(mccVec):.4f}")
         
-        return
+        return pd.DataFrame({
+            "nFolds": [nFolds],
+            "evEveryN": [self.evEveryN],
+            "Mean-Accuracy": [np.mean(accVec)],
+            "Std-Accuracy": [np.std(accVec)],
+            "Mean-Precision": [np.mean(precVec)],
+            "Std-Precision": [np.std(precVec)],
+            "Mean-Recall": [np.mean(recallVec)],
+            "Std-Recall": [np.std(recallVec)],
+            "Mean-F1-score": [np.mean(f1Vec)],
+            "Std-F1-score": [np.std(f1Vec)],
+            "Mean-MCC": [np.mean(mccVec)],
+            "Std-MCC": [np.std(mccVec)],
+        })
 
     # Returns accuracy, precision, recall, F1-score-micro of the evaluated fold
     def _test(self, test: pd.DataFrame) -> Tuple[float, float, float, float, float]:
@@ -58,10 +79,11 @@ class Validator:
             for nodeId in nodeIds:
                 if nodeId not in self.classNodes:
                     for j in range(0, numSlices):
-                        if j == 0:
-                            self.net.set_temporal_evidence(nodeId, j, test.iloc[i][f"{nodeId}"])
-                        else:
-                            self.net.set_temporal_evidence(nodeId, j, test.iloc[i][f"{nodeId}_{j}"])
+                        if j % self.evEveryN == 0:
+                            if j == 0:
+                                self.net.set_temporal_evidence(nodeId, j, test.iloc[i][f"{nodeId}"])
+                            else:
+                                self.net.set_temporal_evidence(nodeId, j, test.iloc[i][f"{nodeId}_{j}"])
             # Get the results for the current evidence stream and compare it to the groundtruth (compute the confusion matrix)
             self.net.update_beliefs()
             for nodeId in self.classNodes:
