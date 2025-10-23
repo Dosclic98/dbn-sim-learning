@@ -2,6 +2,7 @@ from typing import List, Tuple
 from pysmile import Network
 from pysmile.learning import DataSet, EM, DataMatch
 import pandas as pd
+import numpy as np
 
 class Validator:
 
@@ -24,17 +25,34 @@ class Validator:
         if nFolds < 0 or nFolds > len(df):
             raise Exception("Invalid number of folds specified")
 
+        accVec, precVec, recallVec, f1Vec, mccVec = [], [], [], [], []
         for i in range(0, nFolds):
+            acc, prec, recall, f1 = 0.0, 0.0, 0.0, 0.0
             train, test = self._getSplit(df, i, nFolds)
             ds = DataSet()
             ds.read_pandas_dataframe(train)
             matching: List[DataMatch] = ds.match_network(self.net)
             em.learn(ds, self.net, matching, self.fixedNodes)
-            self._test(test)
+            acc, prec, recall, f1, mcc = self._test(test)
+            accVec.append(acc)
+            precVec.append(prec)
+            recallVec.append(recall)
+            f1Vec.append(f1)
+            mccVec.append(mcc)
+            print(f"Fold {i + 1}/{nFolds} -- Accuracy: {acc:.4f}, Precision: {prec:.4f}, Recall: {recall:.4f}, F1-score: {f1:.4f}, MCC: {mcc:.4f}")
+        print(f"Average Accuracy: {np.mean(accVec):.4f} ± {np.std(accVec):.4f}")
+        print(f"Average Precision: {np.mean(precVec):.4f} ± {np.std(precVec):.4f}")
+        print(f"Average Recall: {np.mean(recallVec):.4f} ± {np.std(recallVec):.4f}")
+        print(f"Average F1-score: {np.mean(f1Vec):.4f} ± {np.std(f1Vec):.4f}")
+        print(f"Average MCC: {np.mean(mccVec):.4f} ± {np.std(mccVec):.4f}")
+        
+        return
 
-    def _test(self, test: pd.DataFrame):
+    # Returns accuracy, precision, recall, F1-score-micro of the evaluated fold
+    def _test(self, test: pd.DataFrame) -> Tuple[float, float, float, float, float]:
         numSlices = self.net.get_slice_count()
         nodeIds = self.net.get_all_node_ids()
+        totalTP, totalFP, totalTN, totalFN = 0, 0, 0, 0
         for i in range(0, len(test)):
             # Setting the temporal evidence for non-class nodes
             for nodeId in nodeIds:
@@ -46,43 +64,39 @@ class Validator:
                             self.net.set_temporal_evidence(nodeId, j, test.iloc[i][f"{nodeId}_{j}"])
             # Get the results for the current evidence stream and compare it to the groundtruth (compute the confusion matrix)
             self.net.update_beliefs()
-            resDf = pd.DataFrame(columns=["nodeId", "slice", "outcomeId", "value"])
             for nodeId in self.classNodes:
-                TP, FP, TN, FN = 0, 0, 0, 0
-                val = self.net.get_node_value(nodeId)
+                outcomes = self.net.get_outcome_ids(nodeId)
+                vals = self.net.get_node_value(nodeId)
+                numOutcomes = len(outcomes)
                 for k in range(0, numSlices):
-                    for outcomeId, h in zip(self.net.get_outcome_ids(nodeId), range(len(self.net.get_outcome_ids(nodeId)))):
-                        numOutcomes = len(self.net.get_outcome_ids(nodeId))
-                        resDict = {
-                            "nodeId": nodeId,
-                            "slice": k,
-                            "outcomeId": outcomeId,
-                            "value": val[(k * numOutcomes) + h]
-                        }
-                        resDf = pd.concat([resDf, pd.DataFrame([resDict])], ignore_index=True)
+                     # Prediction by argmax for this slice
+                    offs = k * numOutcomes
+                    probs = vals[offs:offs + numOutcomes]
+                    pred_idx = int(np.argmax(probs))
+                    prediction = outcomes[pred_idx]
                     # Check if the prediction was right or wrong
-                    if k == 0:
-                        groundTruth: str = test.iloc[i][f"{nodeId}"]
-                    else:
-                        groundTruth: str = test.iloc[i][f"{nodeId}_{k}"]
-                    prediction: str = resDf[(resDf["nodeId"] == nodeId) & (resDf["slice"] == k)].sort_values(by="value", ascending=False).iloc[0]["outcomeId"]
+                    # Ground truth column
+                    col = f"{nodeId}" if k == 0 else f"{nodeId}_{k}"
+                    groundTruth: str = test.iloc[i][f"{col}"]
                     if prediction == groundTruth:
                         if prediction == "C":
-                            TP += 1
+                            totalTP += 1
                         else:
-                            TN += 1
+                            totalTN += 1
                     else:
                         if prediction == "N":
-                            FN += 1
+                            totalFN += 1
                         else:
-                            FP += 1
+                            totalFP += 1
 
-                print(f"Confusion Matrix for node {nodeId}:\nTP: {TP}, FP: {FP}, TN: {TN}, FN: {FN}")
+            # Compute balanced accuracy, precision, recall, and F1-score-micro
             self.net.clear_all_evidence()
-
-
-
-
+        accuracy = (totalTP + totalTN) / (totalTP + totalTN + totalFP + totalFN) if (totalTP + totalTN + totalFP + totalFN) > 0 else 0
+        precision = totalTP / (totalTP + totalFP) if (totalTP + totalFP) > 0 else 0
+        recall = totalTP / (totalTP + totalFN) if (totalTP + totalFN) > 0 else 0
+        f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+        mcc = ((totalTP * totalTN) - (totalFP * totalFN)) / np.sqrt((totalTP + totalFP) * (totalTP + totalFN) * (totalTN + totalFP) * (totalTN + totalFN)) if (totalTP + totalFP) > 0 and (totalTP + totalFN) > 0 and (totalTN + totalFP) > 0 and (totalTN + totalFN) > 0 else 0
+        return accuracy, precision, recall, f1_score, mcc
 
     
     def _getSplit(self, df: pd.DataFrame, foldNum: int, nFolds: int) -> Tuple[pd.DataFrame, pd.DataFrame]:
