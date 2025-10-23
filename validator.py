@@ -57,15 +57,15 @@ class Validator:
         return pd.DataFrame({
             "nFolds": [nFolds],
             "evEveryN": [self.evEveryN],
-            "Mean-Accuracy": [np.mean(accVec)],
+            "Accuracy": [np.mean(accVec)],
             "Std-Accuracy": [np.std(accVec)],
-            "Mean-Precision": [np.mean(precVec)],
+            "Precision": [np.mean(precVec)],
             "Std-Precision": [np.std(precVec)],
-            "Mean-Recall": [np.mean(recallVec)],
+            "Recall": [np.mean(recallVec)],
             "Std-Recall": [np.std(recallVec)],
-            "Mean-F1-score": [np.mean(f1Vec)],
+            "F1-score": [np.mean(f1Vec)],
             "Std-F1-score": [np.std(f1Vec)],
-            "Mean-MCC": [np.mean(mccVec)],
+            "MCC": [np.mean(mccVec)],
             "Std-MCC": [np.std(mccVec)],
         })
 
