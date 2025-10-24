@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 # %%
 fileName = "DBNfromAG_learned.xdsl"
-dataFileName = "dbnLogs100.csv"
+dataFileName = "dbnLogs.csv"
 targetNodes = ["DMZ_scanIP", "historian_scanVuln", "tomcatWebServer_bruteForce", "IED1_DERfailure"]
 fixedNodes = ["historianServer_remoteShellAND", "MMSclient1_AND52", "MMSserver1_NodeAND23", "historianServer_NodeOR1"]
 numSlices = 100
@@ -31,7 +31,7 @@ if not algoTypeExact:
     #pysmile.EPISParams.num_state_big
     # Print default EPIS algorithm parameters
     episParams = net.get_epis_params()
-    episParams.propagation_length = 20  # Example modification
+    #episParams.propagation_length = 20  # Example modification
     net.set_epis_params(episParams)
     print("Propagation length: ", episParams.propagation_length)
     print("Num state small:", episParams.num_state_small)
