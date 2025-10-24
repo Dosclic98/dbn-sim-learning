@@ -9,13 +9,11 @@ import numpy as np
 # %%
 fileName = "DBNfromAG.xdsl"
 outFileName = "DBNfromAG_learned.xdsl"
-tracesFileName = "dbnLogs100.csv"
-numSlices = 150
-dt = 1 # time step in seconds
+tracesFileName = "dbnLogs.csv"
+numSlices = 100
 
 outcomes = ["N", "C"]
 priorNodes = ["workStation_compromise"]
-# <node_id>: mean TTC
 
 analyticAccuracy = 0.95
 analyticNodes = []
