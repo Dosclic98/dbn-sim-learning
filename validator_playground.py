@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 # %%
 fileName = "DBNfromAG_learned.xdsl"
 dataFileName = "dbnLogs100.csv"
-targetNodes = ["tomcatWebServer_bruteForce", "DMZ_scanIP", "historian_scanVuln", "IED1_DERfailure"]
+targetNodes = ["DMZ_scanIP", "historian_scanVuln", "tomcatWebServer_bruteForce", "IED1_DERfailure"]
 fixedNodes = ["historianServer_remoteShellAND", "MMSclient1_AND52", "MMSserver1_NodeAND23", "historianServer_NodeOR1"]
 numSlices = 100
 
