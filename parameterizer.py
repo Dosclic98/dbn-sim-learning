@@ -5,6 +5,7 @@ from pathlib import Path
 from pysmile.learning import DataSet, EM
 import itertools
 import numpy as np
+import time
 
 # %%
 fileName = "DBNfromAG.xdsl"
@@ -97,11 +98,14 @@ def fixDiscrParams(net: pysmile.Network, tacticsDict: dict, analyticsDict: dict,
             print(f"Node {nodeId} not found in the network.")
 
 # %%
+startTime = time.time()
+print("Starting parameter learning at ", time.ctime(startTime))
 learnParams(net, tracesFileName, randomize=False, uniformize=True, relevance=False)
 
 # %%
 fixDiscrParams(net, None, analyticsDict, orNodes, andNodes)
-
+endTime = time.time()
+print(f"Parameter learning completed in {endTime - startTime:.2f} seconds.")
 # %%
 net.write_file(outFileName)
 
