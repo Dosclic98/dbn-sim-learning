@@ -3,6 +3,7 @@ from pysmile import Network
 from pysmile.learning import DataSet, EM, DataMatch
 import pandas as pd
 import numpy as np
+import time
 
 class Validator:
 
@@ -33,14 +34,18 @@ class Validator:
         if nFolds < 0 or nFolds > len(df):
             raise Exception("Invalid number of folds specified")
 
-        accVec, precVec, recallVec, f1Vec, mccVec = [], [], [], [], []
+        accVec, precVec, recallVec, f1Vec, mccVec, timesVec = [], [], [], [], [], []
         for i in range(0, nFolds):
             acc, prec, recall, f1 = 0.0, 0.0, 0.0, 0.0
             train, test = self._getSplit(df, i, nFolds)
             ds = DataSet()
             ds.read_pandas_dataframe(train)
             matching: List[DataMatch] = ds.match_network(self.net)
+            startTime = time.time()
+            print(f"Learning parameters for fold {i + 1}/{nFolds} starting at ", time.ctime(startTime))
             em.learn(ds, self.net, matching, self.fixedNodes)
+            endTime = time.time()
+            timesVec.append(endTime - startTime)
             acc, prec, recall, f1, mcc = self._test(test)
             accVec.append(acc)
             precVec.append(prec)
@@ -48,11 +53,13 @@ class Validator:
             f1Vec.append(f1)
             mccVec.append(mcc)
             print(f"Fold {i + 1}/{nFolds} -- Accuracy: {acc:.4f}, Precision: {prec:.4f}, Recall: {recall:.4f}, F1-score: {f1:.4f}, MCC: {mcc:.4f}")
+            print(f"Parameter learning time for fold {i + 1}/{nFolds}: {endTime - startTime:.2f} seconds")
         print(f"Average Accuracy: {np.mean(accVec):.4f} ± {np.std(accVec):.4f}")
         print(f"Average Precision: {np.mean(precVec):.4f} ± {np.std(precVec):.4f}")
         print(f"Average Recall: {np.mean(recallVec):.4f} ± {np.std(recallVec):.4f}")
         print(f"Average F1-score: {np.mean(f1Vec):.4f} ± {np.std(f1Vec):.4f}")
         print(f"Average MCC: {np.mean(mccVec):.4f} ± {np.std(mccVec):.4f}")
+        print(f"Average parameter learning time: {np.mean(timesVec):.2f} ± {np.std(timesVec):.2f} seconds")
         
         return pd.DataFrame({
             "nFolds": [nFolds],

@@ -6,6 +6,7 @@ from pysmile.learning import DataSet, EM
 import itertools
 import numpy as np
 import time
+import pandas as pd
 
 # %%
 fileName = "DBNfromAG.xdsl"
@@ -52,7 +53,8 @@ def plotDefinitions(net: pysmile.Network):
 
 def learnParams(net: pysmile.Network, fileName: str, randomize: bool = False, uniformize: bool = False, relevance: bool = True):
     ds = DataSet()
-    ds.read_file(fileName)
+    train = pd.read_csv(fileName)
+    ds.read_pandas_dataframe(train)
     matching = ds.match_network(net)
     em = EM()
     em.set_seed(98)
