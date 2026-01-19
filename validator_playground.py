@@ -16,7 +16,7 @@ targetNodes = ["DMZ_scanIP", "historian_scanVuln", "tomcatWebServer_bruteForce",
 fixedNodes = ["historianServer_remoteShellAND", "MMSclient1_AND52", "MMSserver1_NodeAND23", "historianServer_NodeOR1"]
 numSlices = 100
 
-algoTypeExact = True
+algoTypeExact = False
 
 ext_ev_every_n_slices = [1,2,5,10]
 numFolds = 5
@@ -74,6 +74,8 @@ full_results_df = pd.read_csv(f"results/{numFolds}_folds-full_results.csv")
 metrics = ['Accuracy', 'F1-score', 'MCC']
 metricsStd = [f'Std-Accuracy', f'Std-F1-score', f'Std-MCC']
 markers = ['o', 's', '^']  # circle, square, triangle
+# Set font scale for better readability
+sns.set(font_scale=1.5)
 for metric, metricStd, marker in zip(metrics, metricsStd, markers):
     ax = plt.gca()
     # Set a different marker for each metric
@@ -87,6 +89,6 @@ plt.ylabel('Metric Value')
 plt.legend(title='Metrics')
 plt.grid(True)
 plt.xticks(ext_ev_every_n_slices)
-plt.savefig('plots/validation_metrics_vs_evEveryNSlices.png')
+plt.savefig('plots/validation_metrics_vs_evEveryNSlices.png', bbox_inches='tight')
 
 

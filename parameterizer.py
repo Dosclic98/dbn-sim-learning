@@ -7,12 +7,16 @@ import itertools
 import numpy as np
 import time
 import pandas as pd
+import tracemalloc
 
 # %%
 fileName = "DBNfromAG.xdsl"
 outFileName = "DBNfromAG_learned.xdsl"
 tracesFileName = "dbnLogs.csv"
 numSlices = 100
+
+benchmarkLearning = True
+numReps = 10
 
 outcomes = ["N", "C"]
 priorNodes = ["workStation_compromise"]
@@ -100,18 +104,51 @@ def fixDiscrParams(net: pysmile.Network, tacticsDict: dict, analyticsDict: dict,
             print(f"Node {nodeId} not found in the network.")
 
 # %%
-startTime = time.time()
-print("Starting parameter learning at ", time.ctime(startTime))
-learnParams(net, tracesFileName, randomize=False, uniformize=True, relevance=False)
+if benchmarkLearning:
+    times = []
+    perfDf = pd.DataFrame(columns=["Run", "TimeSeconds", "MemoryPeakBytes"])
+    aggrPerfDf = pd.DataFrame(columns=["NumReps", "AvgTimeSeconds", "StdTimeSeconds", "AvgMemoryPeakBytes", "StdMemoryPeakBytes"])
+    for rep in range(numReps):
+        print(f"--- Benchmarking parameter learning: Run {rep + 1}/{numReps} ---")
+        startTime = time.time()
+        print("Starting parameter learning at ", time.ctime(startTime))
+        tracemalloc.start()
+        learnParams(net, tracesFileName, randomize=False, uniformize=True, relevance=False)
+        fixDiscrParams(net, None, analyticsDict, orNodes, andNodes)
+        current, peak = tracemalloc.get_traced_memory()
+        tracemalloc.stop()
+        endTime = time.time()
+        print(f"Parameter learning completed in {endTime - startTime:.2f} seconds.")
+        times.append(endTime - startTime)
+        perfDf = pd.concat([perfDf, pd.DataFrame({
+            "Run": [rep + 1],
+            "TimeSeconds": [endTime - startTime],
+            "MemoryPeakMBytes": [peak * 1e-6],
+        })], ignore_index=True) 
+    perfDf.to_csv("results/parameter_learning_benchmark.csv", float_format=".2f", index=False)
+    aggrPerfDf = pd.concat([aggrPerfDf, pd.DataFrame({
+        "NumReps": [numReps],
+        "AvgTimeSeconds": [np.mean(times)],
+        "StdTimeSeconds": [np.std(times)],
+        "AvgMemoryPeakMBytes": [perfDf["MemoryPeakMBytes"].mean()],
+        "StdMemoryPeakMBytes": [perfDf["MemoryPeakMBytes"].std()],
+    })], ignore_index=True)
+    aggrPerfDf.to_csv("results/parameter_learning_benchmark_aggregated.csv", float_format=".2f", index=False)
+    print(f"Average parameter learning time over {numReps} runs: {np.mean(times):.2f} ± {np.std(times):.2f} seconds")
+    print(f"Average peak memory usage over {numReps} runs: {perfDf['MemoryPeakMBytes'].mean():.2f} ± {perfDf['MemoryPeakMBytes'].std():.2f} MBytes")
 
-# %%
-fixDiscrParams(net, None, analyticsDict, orNodes, andNodes)
-endTime = time.time()
-print(f"Parameter learning completed in {endTime - startTime:.2f} seconds.")
+else:
+    print("--- Performing single parameter learning run ---")
+    startTime = time.time()
+    print("Starting parameter learning at ", time.ctime(startTime))
+    learnParams(net, tracesFileName, randomize=False, uniformize=True, relevance=False)
+    fixDiscrParams(net, None, analyticsDict, orNodes, andNodes)
+    endTime = time.time()
+    print(f"Parameter learning completed in {endTime - startTime:.2f} seconds.")
 # %%
 net.write_file(outFileName)
 
 # %%
-plotDefinitions(net)
+# plotDefinitions(net)
 
 

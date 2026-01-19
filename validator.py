@@ -34,9 +34,9 @@ class Validator:
         if nFolds < 0 or nFolds > len(df):
             raise Exception("Invalid number of folds specified")
 
-        accVec, precVec, recallVec, f1Vec, mccVec, timesVec = [], [], [], [], [], []
+        accVec, precVec, recallVec, f1Vec, specVec, mccVec, timesVec = [], [], [], [], [], [], []
         for i in range(0, nFolds):
-            acc, prec, recall, f1 = 0.0, 0.0, 0.0, 0.0
+            acc, prec, recall, spec, f1 = 0.0, 0.0, 0.0, 0.0, 0.0
             train, test = self._getSplit(df, i, nFolds)
             ds = DataSet()
             ds.read_pandas_dataframe(train)
@@ -46,18 +46,20 @@ class Validator:
             em.learn(ds, self.net, matching, self.fixedNodes)
             endTime = time.time()
             timesVec.append(endTime - startTime)
-            acc, prec, recall, f1, mcc = self._test(test)
+            acc, prec, recall, f1, spec, mcc = self._test(test)
             accVec.append(acc)
             precVec.append(prec)
             recallVec.append(recall)
             f1Vec.append(f1)
+            specVec.append(spec)
             mccVec.append(mcc)
-            print(f"Fold {i + 1}/{nFolds} -- Accuracy: {acc:.4f}, Precision: {prec:.4f}, Recall: {recall:.4f}, F1-score: {f1:.4f}, MCC: {mcc:.4f}")
+            print(f"Fold {i + 1}/{nFolds} -- Accuracy: {acc:.4f}, Precision: {prec:.4f}, Recall: {recall:.4f}, F1-score: {f1:.4f}, Specificity: {spec:.4f}, MCC: {mcc:.4f}")
             print(f"Parameter learning time for fold {i + 1}/{nFolds}: {endTime - startTime:.2f} seconds")
         print(f"Average Accuracy: {np.mean(accVec):.4f} ± {np.std(accVec):.4f}")
         print(f"Average Precision: {np.mean(precVec):.4f} ± {np.std(precVec):.4f}")
         print(f"Average Recall: {np.mean(recallVec):.4f} ± {np.std(recallVec):.4f}")
         print(f"Average F1-score: {np.mean(f1Vec):.4f} ± {np.std(f1Vec):.4f}")
+        print(f"Average Specificity: {np.mean(specVec):.4f} ± {np.std(specVec):.4f}")
         print(f"Average MCC: {np.mean(mccVec):.4f} ± {np.std(mccVec):.4f}")
         print(f"Average parameter learning time: {np.mean(timesVec):.2f} ± {np.std(timesVec):.2f} seconds")
         
@@ -72,12 +74,14 @@ class Validator:
             "Std-Recall": [np.std(recallVec)],
             "F1-score": [np.mean(f1Vec)],
             "Std-F1-score": [np.std(f1Vec)],
+            "Specificity": [np.mean(specVec)],
+            "Std-Specificity": [np.std(specVec)],
             "MCC": [np.mean(mccVec)],
             "Std-MCC": [np.std(mccVec)],
         })
 
     # Returns accuracy, precision, recall, F1-score-micro of the evaluated fold
-    def _test(self, test: pd.DataFrame) -> Tuple[float, float, float, float, float]:
+    def _test(self, test: pd.DataFrame) -> Tuple[float, float, float, float, float, float]:
         numSlices = self.net.get_slice_count()
         nodeIds = self.net.get_all_node_ids()
         totalTP, totalFP, totalTN, totalFN = 0, 0, 0, 0
@@ -124,8 +128,9 @@ class Validator:
         precision = totalTP / (totalTP + totalFP) if (totalTP + totalFP) > 0 else 0
         recall = totalTP / (totalTP + totalFN) if (totalTP + totalFN) > 0 else 0
         f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+        specificity = totalTN / (totalTN + totalFP) if (totalTN + totalFP) > 0 else 0
         mcc = ((totalTP * totalTN) - (totalFP * totalFN)) / np.sqrt((totalTP + totalFP) * (totalTP + totalFN) * (totalTN + totalFP) * (totalTN + totalFN)) if (totalTP + totalFP) > 0 and (totalTP + totalFN) > 0 and (totalTN + totalFP) > 0 and (totalTN + totalFN) > 0 else 0
-        return accuracy, precision, recall, f1_score, mcc
+        return accuracy, precision, recall, f1_score, specificity, mcc
 
     
     def _getSplit(self, df: pd.DataFrame, foldNum: int, nFolds: int) -> Tuple[pd.DataFrame, pd.DataFrame]:
