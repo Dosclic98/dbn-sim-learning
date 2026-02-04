@@ -1,6 +1,6 @@
-# %%
 import pysmile
 import pysmile_license
+from validator import Validator
 from pathlib import Path
 from pysmile.learning import DataSet, EM
 import itertools
@@ -8,74 +8,60 @@ from expdef import Experiment, Analytic, Result
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import sys
 
-# %%
-fileName = "DBNfromAG_learned.xdsl"
-dataFileName = "dbnLogs.csv"
-targetNodes = ["DMZ_scanIP", "historian_scanVuln", "tomcatWebServer_bruteForce", "IED1_DERfailure"]
+# Enable layex backend for matplotlib
+plt.rcParams['text.usetex'] = True
+plt.rcParams['font.family'] = 'serif'
+plt.rcParams['font.size'] = 12
+
+fileName = "models/DBNfromAG_learned.xdsl"
+dataFileName = "traces/dbnLogs.csv"
+targetNodes = ["tomcatWebServer_bruteForce", "DMZ_scanIP", "historian_scanVuln", "IED1_DERfailure"]
 fixedNodes = ["historianServer_remoteShellAND", "MMSclient1_AND52", "MMSserver1_NodeAND23", "historianServer_NodeOR1"]
 numSlices = 100
-
 algoTypeExact = False
-
 ext_ev_every_n_slices = [1,2,5,10]
 numFolds = 5
+# Read the --stored parameter from command line
+stored = False
+if '--stored' in sys.argv:
+    stored = True
 
-# %%
 net = pysmile.Network()
 net.read_file(fileName)
 net.set_slice_count(numSlices)
 if not algoTypeExact:
     # Set default inference algorithm and parameters
     net.set_bayesian_algorithm(pysmile.BayesianAlgorithmType.EPIS_SAMPLING)
-    #pysmile.EPISParams.num_state_big
-    # Print default EPIS algorithm parameters
-    episParams = net.get_epis_params()
-    #episParams.propagation_length = 20  # Example modification
-    net.set_epis_params(episParams)
-    print("Propagation length: ", episParams.propagation_length)
-    print("Num state small:", episParams.num_state_small)
-    print("Num state medium:", episParams.num_state_medium)
-    print("Num state big:", episParams.num_state_big)
 else:
     net.set_bayesian_algorithm(pysmile.BayesianAlgorithmType.LAURITZEN)
-
-# %%
-def plotDefinitions(net: pysmile.Network):
-    nodeHandles = net.get_all_nodes()
-    nodeIds = net.get_all_node_ids()
-    for nodeHandle, nodeId in zip(nodeHandles, nodeIds):
-        nodeDef = net.get_node_definition(nodeHandle)
-        nodeOutcomes = net.get_outcome_ids(nodeHandle)
-        print(f"Node ID: {nodeId}, Definition: {nodeDef}, Outcomes: {nodeOutcomes}")
-
-# %%
-from validator import Validator
 
 validator: Validator = Validator(net, dataFileName, fixedNodes)
 for targetNode in targetNodes:
     validator.addClassNode(targetNode)
 
-full_results_df = pd.DataFrame()
-for ev_every_n_slices in ext_ev_every_n_slices:
-    print(f"Evaluating with evEveryNSlices = {ev_every_n_slices}")
-    validator.set_ev_every_n_slices(ev_every_n_slices)
-    results_df = validator.kFold(nFolds=numFolds)
-    results_df.to_csv(f"results/{numFolds}_folds-evEveryNSlices_{ev_every_n_slices}.csv", index=False)
-    full_results_df = pd.concat([full_results_df, results_df], ignore_index=True)
-full_results_df.to_csv(f"results/{numFolds}_folds-full_results.csv", index=False)
+if not stored:
+    print("Running validation...")
+    full_results_df = pd.DataFrame()
+    for ev_every_n_slices in ext_ev_every_n_slices:
+        print(f"Evaluating with evEveryNSlices = {ev_every_n_slices}")
+        validator.set_ev_every_n_slices(ev_every_n_slices)
+        results_df = validator.kFold(nFolds=numFolds)
+        results_df.to_csv(f"results/{numFolds}_folds-evEveryNSlices_{ev_every_n_slices}.csv", index=False)
+        full_results_df = pd.concat([full_results_df, results_df], ignore_index=True)
+    full_results_df.to_csv(f"results/{numFolds}_folds-full_results.csv", index=False)
+else:
+    print("Loading stored results...")
+    # Load full results from CSV if needed
+    full_results_df = pd.read_csv(f"results/{numFolds}_folds-full_results.csv")
 
-# %%
-# Load full results from CSV if needed
-full_results_df = pd.read_csv(f"results/{numFolds}_folds-full_results.csv")
-
-# %%
 # Plot the full results using a line plot (one line per metric with error bars)
 metrics = ['Accuracy', 'F1-score', 'MCC']
 metricsStd = [f'Std-Accuracy', f'Std-F1-score', f'Std-MCC']
 markers = ['o', 's', '^']  # circle, square, triangle
-# Set font scale for better readability
-sns.set(font_scale=1.5)
+
+sns.set_context("notebook", font_scale=1.7)
 for metric, metricStd, marker in zip(metrics, metricsStd, markers):
     ax = plt.gca()
     # Set a different marker for each metric
@@ -89,6 +75,6 @@ plt.ylabel('Metric Value')
 plt.legend(title='Metrics')
 plt.grid(True)
 plt.xticks(ext_ev_every_n_slices)
-plt.savefig('plots/validation_metrics_vs_evEveryNSlices.png', bbox_inches='tight')
+plt.savefig('plots/validation_metrics_vs_evEveryNSlices.pdf', bbox_inches='tight')
 
 

@@ -10,9 +10,9 @@ import pandas as pd
 import tracemalloc
 
 # %%
-fileName = "DBNfromAG.xdsl"
-outFileName = "DBNfromAG_learned.xdsl"
-tracesFileName = "dbnLogs.csv"
+fileName = "models/DBNfromAG.xdsl"
+outFileName = "models/DBNfromAG_learned.xdsl"
+tracesFileName = "traces/dbnLogs.csv"
 numSlices = 100
 
 benchmarkLearning = True
@@ -125,7 +125,7 @@ if benchmarkLearning:
             "TimeSeconds": [endTime - startTime],
             "MemoryPeakMBytes": [peak * 1e-6],
         })], ignore_index=True) 
-    perfDf.to_csv("results/parameter_learning_benchmark.csv", float_format=".2f", index=False)
+    perfDf.to_csv("results/parameter_learning_benchmark.csv", index=False)
     aggrPerfDf = pd.concat([aggrPerfDf, pd.DataFrame({
         "NumReps": [numReps],
         "AvgTimeSeconds": [np.mean(times)],
@@ -133,7 +133,7 @@ if benchmarkLearning:
         "AvgMemoryPeakMBytes": [perfDf["MemoryPeakMBytes"].mean()],
         "StdMemoryPeakMBytes": [perfDf["MemoryPeakMBytes"].std()],
     })], ignore_index=True)
-    aggrPerfDf.to_csv("results/parameter_learning_benchmark_aggregated.csv", float_format=".2f", index=False)
+    aggrPerfDf.to_csv("results/parameter_learning_benchmark_aggregated.csv", index=False)
     print(f"Average parameter learning time over {numReps} runs: {np.mean(times):.2f} ± {np.std(times):.2f} seconds")
     print(f"Average peak memory usage over {numReps} runs: {perfDf['MemoryPeakMBytes'].mean():.2f} ± {perfDf['MemoryPeakMBytes'].std():.2f} MBytes")
 
