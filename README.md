@@ -51,8 +51,7 @@ cd dbn-sim-learning
 
 You need a BayesFusion SMILE/pysmile Academic license.
 
-- Install pysmile (Academic index) as described above.
-- Retrieve your license from BayesFusion support pages (Academic program) and create `pysmile_license.py` in the repository root.
+- Retrieve your license from [BayesFusion support pages](https://download.bayesfusion.com/files.html?category=Academia) (Academic program) and create `pysmile_license.py` in the repository root.
 
 Note: `pysmile_license.py` is intentionally ignored by git via `.gitignore`.
 
