@@ -4,7 +4,7 @@ re="^[0-9]+$"
 
 # Return number of active runs function
 getNumActiveRuns () {
-	echo $(( $(ps -aux | grep "../src/MQTT_MMS_Medium" | wc -l) - 2))
+	echo $(( $(ps -aux | grep "../MQTT_MMS_Medium" | wc -l) - 2))
 }
 
 
@@ -41,13 +41,12 @@ echo "Running..."
 source ~/omnetpp/setenv
 for i in $(seq 0 $(($numRuns-1))); 
 do 
-	cd ~/omnetpp-projects/MQTT_MMS_Medium/simulations && ../MQTT_MMS_Medium -r $i -m -u Cmdenv -n '.:../src:../../inet4.5/examples:../../inet4.5/showcases:../../inet4.5/src:../../inet4.5/tests/validation:../../inet4.5/tests/networks:../../inet4.5/tutorials:../../simu5g/emulation:../../simu5g/simulations:../../simu5g/src' -x 'inet.common.selfdoc;inet.linklayer.configurator.gatescheduling.z3;inet.emulation;inet.showcases.visualizer.osg;inet.examples.emulation;inet.showcases.emulation;inet.transportlayer.tcp_lwip;inet.applications.voipstream;inet.visualizer.osg;inet.examples.voipstream;simu5g.simulations.LTE.cars;simu5g.simulations.NR.cars;simu5g.nodes.cars'  --image-path='../../inet4.5/images:../../simu5g/images' omnetpp_new.ini >> logger.log;
+	cd ~/omnetpp-projects/MQTT_MMS_Medium/simulations && ../MQTT_MMS_Medium -r $i -m -u Cmdenv -n '.:../src:../../inet4.5/examples:../../inet4.5/showcases:../../inet4.5/src:../../inet4.5/tests/validation:../../inet4.5/tests/networks:../../inet4.5/tutorials:../../simu5g/emulation:../../simu5g/simulations:../../simu5g/src' -x 'inet.common.selfdoc;inet.linklayer.configurator.gatescheduling.z3;inet.emulation;inet.showcases.visualizer.osg;inet.examples.emulation;inet.showcases.emulation;inet.transportlayer.tcp_lwip;inet.applications.voipstream;inet.visualizer.osg;inet.examples.voipstream;simu5g.simulations.LTE.cars;simu5g.simulations.NR.cars;simu5g.nodes.cars'  --image-path='../../inet4.5/images:../../simu5g/images' omnetpp_new.ini >> logger.log &
 	if ! [[ $? -eq 0 ]]; then
 		echo "Error running simulations: see logger.log for more info"
 		exit 1
 	fi
 	numActiveRuns=$(getNumActiveRuns)
-
 	while [ $numActiveRuns -ge $batchSize ]; do 
 		numActiveRuns=$(getNumActiveRuns)
 		sleep 0.1

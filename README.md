@@ -21,6 +21,22 @@ pip install -r requirements.txt
 
 To run the scripts using pysmile, a license file must be provided. Every script expects a `pysmile_license.py` file (in the project root) containing your pysmile license.
 
+## How to run the simulator batch with resource monitoring
+
+The repository includes a Python script `runSimulation.py` that tracks per-run peak RAM (MB) and wall-clock time, producing CSV reports in `results/`.
+Takes -r (number of runs) and -p (maximum number of parallel runs) as arguments. It then copies the dbnLogs.csv file from the simulator output to the results/ folder.
+
+Example:
+
+```bash
+python runSimulation.py -r 1000 -p 20
+```
+
+Outputs:
+- `results/logger.log`: simulator output (same spirit as the bash script)
+- `results/simulation_resources.csv`: per-run wall time and peak RSS
+- `results/simulation_resources_summary.csv`: mean and standard deviation over successful runs
+
 ## How to parameterize the DBN
 
 Run `parameterizer.ipynb` (or the exported `parameterizer.py`) to learn the CPTs of the base DBN model.

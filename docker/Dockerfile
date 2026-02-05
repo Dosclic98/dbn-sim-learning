@@ -31,7 +31,7 @@ RUN apt-get update -y && apt-get install -f -y openssh-server sudo git build-ess
     && sed -i "s/^.*PasswordAuthentication.*$/PasswordAuthentication no/" /etc/ssh/sshd_config \
     && sed -i "s/^.*X11Forwarding.*$/X11Forwarding yes/" /etc/ssh/sshd_config \
     && grep "^X11UseLocalhost" /etc/ssh/sshd_config || echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
-RUN python3 -m pip install --upgrade numpy pandas matplotlib scipy seaborn posix_ipc latex
+RUN python3 -m pip install --upgrade numpy pandas matplotlib scipy seaborn posix_ipc latex psutil
 
 RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
@@ -89,7 +89,10 @@ RUN chmod -R 765 aggregator.sh
 WORKDIR ${HOME}
 RUN git clone https://github.com/Dosclic98/dbn-sim-learning.git
 WORKDIR ${HOME}/dbn-sim-learning
-RUN chmod -R 765 runSimulation.sh
+RUN mkdir -p results traces
+RUN chmod -R 765 runSimulation.sh || true
 RUN python3 -m pip install -r requirements.txt
+
+WORKDIR /home/simulation/dbn-sim-learning
 
 ENTRYPOINT ["/bin/bash"]
