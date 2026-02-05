@@ -22,7 +22,7 @@ ENV LANG=en_US.utf8
 
 # Installing dependencies
 RUN apt-get update -y && apt-get install -f -y openssh-server sudo git build-essential locales clang lld gdb bison flex perl \
-    python3 python3-pip qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools \
+    python3 python3-pip qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools nano \
     libqt5opengl5-dev libxml2-dev zlib1g-dev doxygen graphviz \
     libwebkit2gtk-4.0-37 xdg-utils mpi-default-dev\
     && useradd -ms /bin/bash simulation \                      
