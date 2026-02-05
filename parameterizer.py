@@ -1,4 +1,5 @@
 # %%
+import argparse
 import pysmile
 import pysmile_license
 from pathlib import Path
@@ -9,13 +10,22 @@ import time
 import pandas as pd
 import tracemalloc
 
+
+argParser = argparse.ArgumentParser(add_help=True)
+argParser.add_argument(
+    "--bench",
+    action="store_true",
+    help="Run in benchmark mode (repeats learning multiple times and writes results/*.csv).",
+)
+args, _unknownArgs = argParser.parse_known_args()
+
 # %%
 fileName = "models/DBNfromAG.xdsl"
 outFileName = "models/DBNfromAG_learned.xdsl"
 tracesFileName = "traces/dbnLogs.csv"
 numSlices = 100
 
-benchmarkLearning = True
+benchmarkLearning = bool(args.bench)
 numReps = 10
 
 outcomes = ["N", "C"]
@@ -147,8 +157,5 @@ else:
     print(f"Parameter learning completed in {endTime - startTime:.2f} seconds.")
 # %%
 net.write_file(outFileName)
-
-# %%
-# plotDefinitions(net)
 
 
