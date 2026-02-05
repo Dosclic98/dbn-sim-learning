@@ -24,13 +24,9 @@ ENV LANG=en_US.utf8
 RUN apt-get update -y && apt-get install -f -y openssh-server sudo git build-essential locales clang lld gdb bison flex perl \
     python3 python3-pip qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools nano \
     libqt5opengl5-dev libxml2-dev zlib1g-dev doxygen graphviz \
-    libwebkit2gtk-4.0-37 xdg-utils mpi-default-dev\
-    && useradd -ms /bin/bash simulation \                      
-    && mkdir /var/run/sshd \    
-    && ssh-keygen -A \
-    && sed -i "s/^.*PasswordAuthentication.*$/PasswordAuthentication no/" /etc/ssh/sshd_config \
-    && sed -i "s/^.*X11Forwarding.*$/X11Forwarding yes/" /etc/ssh/sshd_config \
-    && grep "^X11UseLocalhost" /etc/ssh/sshd_config || echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
+    libwebkit2gtk-4.0-37 xdg-utils mpi-default-dev util-linux\
+    && useradd -ms /bin/bash simulation
+    
 RUN python3 -m pip install --upgrade numpy pandas matplotlib scipy seaborn posix_ipc latex psutil
 
 RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
@@ -89,10 +85,15 @@ RUN chmod -R 765 aggregator.sh
 WORKDIR ${HOME}
 RUN git clone https://github.com/Dosclic98/dbn-sim-learning.git
 WORKDIR ${HOME}/dbn-sim-learning
-RUN mkdir -p results traces
+RUN mkdir -p models plots results traces
 RUN chmod -R 765 runSimulation.sh || true
 RUN python3 -m pip install -r requirements.txt
 
 WORKDIR /home/simulation/dbn-sim-learning
 
-ENTRYPOINT ["/bin/bash"]
+USER root
+
+COPY entrypoint.sh /usr/local/bin/dbn-entrypoint.sh
+RUN chmod +x /usr/local/bin/dbn-entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/dbn-entrypoint.sh"]
