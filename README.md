@@ -21,21 +21,91 @@ pip install -r requirements.txt
 
 To run the scripts using pysmile, a license file must be provided. Every script expects a `pysmile_license.py` file (in the project root) containing your pysmile license.
 
-## How to run the simulator batch with resource monitoring
+## Replicating the results (recommended: Docker)
 
-The repository includes a Python script `runSimulation.py` that tracks per-run peak RAM (MB) and wall-clock time, producing CSV reports in `results/`.
-Takes -r (number of runs) and -p (maximum number of parallel runs) as arguments. It then copies the dbnLogs.csv file from the simulator output to the results/ folder.
+### Reference host specs (used to obtain the reported results)
 
-Example:
+Host OS:
+- Ubuntu 22.04.5 LTS (Jammy)
+- Linux kernel: 5.15.0-164-generic
+
+Host CPU:
+- Intel(R) Xeon(R) Gold 6418H
+- 2 sockets × 16 cores (32 CPUs visible)
+
+Host RAM:
+- 62 GiB (swap: 8 GiB)
+
+Docker:
+- Docker Engine: 28.2.2
+- buildx: 0.21.3
+
+### 1) Clone the repository locally
 
 ```bash
-python runSimulation.py -r 1000 -p 20
+git clone https://github.com/Dosclic98/dbn-sim-learning.git
+cd dbn-sim-learning
 ```
 
-Outputs:
-- `results/logger.log`: simulator output (same spirit as the bash script)
-- `results/simulation_resources.csv`: per-run wall time and peak RSS
-- `results/simulation_resources_summary.csv`: mean and standard deviation over successful runs
+### 2) Add your `pysmile_license.py`
+
+You need a BayesFusion SMILE/pysmile Academic license.
+
+- Install pysmile (Academic index) as described above.
+- Retrieve your license from BayesFusion support pages (Academic program) and create `pysmile_license.py` in the repository root.
+
+Note: `pysmile_license.py` is intentionally ignored by git via `.gitignore`.
+
+### 3) Build the container
+
+Using the helper script:
+
+```bash
+./buildContainer.sh
+```
+
+Or manually:
+
+```bash
+sudo docker buildx build --progress=plain -t omnet ./docker/
+```
+
+### 4) Run the container (with shared output folders)
+
+Using the helper script:
+
+```bash
+./runContainer.sh
+```
+
+Or manually (shares `plots/`, `results/`, `traces/` on the host):
+
+```bash
+mkdir -p dbn-sim-learning-container/{plots,results,traces}
+
+sudo docker run --rm -it \
+	-v "$PWD/pysmile_license.py":/home/simulation/dbn-sim-learning/pysmile_license.py:ro \
+	-v "$PWD/dbn-sim-learning-container/plots":/home/simulation/dbn-sim-learning/plots \
+	-v "$PWD/dbn-sim-learning-container/results":/home/simulation/dbn-sim-learning/results \
+	-v "$PWD/dbn-sim-learning-container/traces":/home/simulation/dbn-sim-learning/traces \
+	omnet
+```
+
+### 5) Replicate the full pipeline inside the container
+
+From `/home/simulation/dbn-sim-learning` (container workdir), run:
+
+```bash
+python3 replicate_results.py -r 1000 -p "$(nproc)"
+```
+
+This will:
+- run the simulator batch (with resource monitoring)
+- run `parameterizer.py` in normal and benchmark mode
+- run `data_evaluator.py`
+- run `experiment_analyzer.py` in normal and benchmark mode
+- run `validator_playground.py`
+- print the total wall-clock time at the end
 
 ## How to parameterize the DBN
 
