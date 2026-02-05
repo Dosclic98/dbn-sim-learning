@@ -2,7 +2,7 @@
 set -euo pipefail
 
 workspaceDir="/home/simulation/dbn-sim-learning"
-sharedDirs=("models" "plots" "results" "traces")
+sharedDirs=("plots" "results" "traces")
 
 # Normalize how commands are passed:
 # - default: interactive bash
