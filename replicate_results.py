@@ -31,8 +31,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument(
         "-r",
         type=int,
-        default=100,
-        help="Number of simulation runs (passed to runSimulation.py). Default: 100",
+        default=1000,
+        help="Number of simulation runs (passed to runSimulation.py). Default: 1000",
     )
     parser.add_argument(
         "-p",
