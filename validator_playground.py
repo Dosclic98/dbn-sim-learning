@@ -20,7 +20,7 @@ dataFileName = "traces/dbnLogs.csv"
 targetNodes = ["tomcatWebServer_bruteForce", "DMZ_scanIP", "historian_scanVuln", "IED1_DERfailure"]
 fixedNodes = ["historianServer_remoteShellAND", "MMSclient1_AND52", "MMSserver1_NodeAND23", "historianServer_NodeOR1"]
 numSlices = 100
-algoTypeExact = False
+algoTypeExact = True
 ext_ev_every_n_slices = [1,2,5,10]
 numFolds = 5
 # Read the --stored parameter from command line
