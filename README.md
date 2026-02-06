@@ -18,6 +18,9 @@ Docker:
 - Docker Engine: 28.2.2
 - buildx: 0.21.3
 
+### Expected run time
+The full pipeline (simulation, parameterization, validation, and analysis) takes approximately 2 hours and 15 minutes on the reference host, with 1000 traces and using 30 cores for parallelization. The exact time may vary based on the host specifications. The most time-consuming step is the validation since the DBN must be retrained and tested multiple times for every fold and for every evidence frequency.
+
 ### 1) Clone the repository locally
 
 ```bash
