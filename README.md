@@ -8,18 +8,18 @@ Using the provided Dockerfile, you can build a container that includes all neces
 ### Reference host specs (used to obtain the reported results)
 
 Host Specifications:
-- OS: Ubuntu 22.04.5 LTS (Jammy)
-- Linux kernel: 5.15.0-164-generic
+- **OS**: Ubuntu 22.04.5 LTS (Jammy)
+- **Linux** kernel: 5.15.0-164-generic
 
-- CPU: Intel(R) Xeon(R) Gold 6418H (2 sockets × 16 cores @2.70GHz, 64 threads)
-- RAM: 62 GiB (swap: 8 GiB)
+- **CPU**: Intel(R) Xeon(R) Gold 6418H (2 sockets × 16 cores @2.70GHz, 64 threads)
+- **RAM**: 62 GiB (swap: 8 GiB)
 
 Docker:
-- Docker Engine: 28.2.2
-- buildx: 0.21.3
+- **Docker** Engine: 28.2.2
+- **buildx**: 0.21.3
 
 ### Expected run time
-The full pipeline (simulation, parameterization, validation, and analysis) takes approximately 2 hours and 15 minutes on the reference host, with 1000 traces and using 30 cores for parallelization. The exact time may vary based on the host specifications. The most time-consuming step is the validation since the DBN must be retrained and tested multiple times for every fold and for every evidence frequency.
+The full pipeline (simulation, parameterization, validation, and analysis) takes approximately **2 hours and 15 minutes** on the reference host, with 1000 traces and using 30 cores for parallelization. The exact time may vary based on the host specifications. The most time-consuming step is the validation since the DBN must be retrained and tested multiple times for every fold and for every evidence frequency.
 
 ### 1) Clone the repository locally
 
