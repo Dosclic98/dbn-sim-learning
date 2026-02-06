@@ -87,62 +87,132 @@ This will:
 - run `validator_playground.py`
 - print the total wall-clock time at the end
 
-## Additional informations on the scripts
+## Additional information on the scripts
 
-Here we provide more details on the scripts used for parameterization, inference, validation, and data analysis.
+This repository is currently organized around a small set of Python entrypoints in the repository root.
+When running via Docker, outputs inside the container are written to `plots/`, `results/`, and `traces/` and are bind-mounted to the host under `dbn-sim-learning-container/{plots,results,traces}` (see the `docker/` folder and `runContainer.sh`).
 
-### How to parameterize the DBN
+### Full pipeline orchestrator
 
-Run `parameterizer.ipynb` (or the exported `parameterizer.py`) to learn the CPTs of the base DBN model.
-The main parameters are:
+Run:
 
-- `fileName`: The file containing the base DBN model (default: `DBNfromAG.xdsl`).
-- `outFileName`: The output file where the parameterized DBN is saved (default: `DBNfromAG_learned.xdsl`).
-- `tracesFileName`: The file containing the traces used for parameterization (default: `dbnLogs.csv`; `dbnLogs100.csv` contains only 100 traces).
-- `numSlices`: The number of slices to consider (currently up to 100 due to a pysmile limitation).
+```bash
+python3 replicate_results.py -r 1000 -p "$(nproc)"
+```
 
-### How to perform inference on the trained model
+`replicate_results.py` runs the whole pipeline in sequence:
 
-After training, use `experimentanalyzer.ipynb` to answer probabilistic queries.
+1. `runSimulation.py` (simulation batch + resource monitoring)
+2. `parameterizer.py` (single learning run)
+3. `parameterizer.py --bench` (parameter-learning benchmark)
+4. `data_evaluator.py` (trace distribution + entropy)
+5. `experiment_analyzer.py` (inference plots)
+6. `experiment_analyzer.py --bench` (inference benchmark)
+7. `validator_playground.py` (k-fold validation vs evidence frequency)
 
-The following parameters can be modified:
+It also ensures `plots/`, `results/`, and `traces/` exist before starting.
 
-- `fileName`: Path to the trained DBN (.xdsl) to load for inference (e.g., `DBNfromAG_learned.xdsl`).
-- `numSlices`: Number of time slices to consider in the DBN and to plot on the x‑axis.
-- `algoTypeExact`: If `True`, use the exact Lauritzen algorithm; if `False`, use EPIS sampling (EPIS parameters can be tuned via `net.get_epis_params()`).
-- `targetNodes`: List of node IDs highlighted in the final “Completed” summary plot.
-- `remapOutcomes`: List of node IDs whose outcome labels are remapped for readability.
-- `outcomesRemap`: Dict mapping raw outcome IDs to display labels (e.g., `{"N": "Not completed", "C": "Completed"}`).
+### Simulation + trace aggregation (`runSimulation.py`)
 
-Currently the provided example experiment does not set any evidence.
-The output is a plot showing the posterior probability of the target nodes over time.
+Run:
 
-### How to validate the model
+```bash
+python3 runSimulation.py -r 1000 -p 30
+```
 
-After learning the CPTs, you can assess the DBN’s performance through k‑fold Cross‑Validation (CV). The dataset is split across `k` equally sized folds; `k−1` folds are used for training and 1 for testing. This is repeated `k` times, rotating the test fold. The performance metrics (Accuracy, F1‑score, and Matthews Correlation Coefficient, MCC) are averaged to obtain the final results.
+It is designed to run inside the container where OMNeT++ is installed.
+It launches multiple OMNeT++ runs in parallel and monitors per-run wall-clock time and peak RSS (requires `psutil`).
+After all runs complete, it calls the simulator's `aggregator.sh` to produce the aggregated trace CSV.
 
-During testing, nodes chosen as “target nodes” are used to evaluate classification performance, while evidence is set on the remaining nodes. For each test trace, values for non‑target nodes are provided as evidence; values for target nodes are compared with the model prediction (outcome with the highest likelihood) to compute the confusion matrix.
+Main outputs:
+- `results/logger.log`: simulator + aggregation logs
+- `results/simulation_resources.csv`: per-run wall-clock and peak RSS
+- `results/simulation_resources_summary.csv`: mean/std of wall-clock and peak RSS
+- `results/dbnLogs.csv` and `traces/dbnLogs.csv`: aggregated traces used by the learning/analysis scripts
 
-By default, the pysmile validator provides evidence on non‑target nodes at every time slice. In our validator, we study how providing less frequent evidence impacts performance by using a vector parameter with the values of `n` to test. The k‑fold CV is repeated for each `n`.
+### Parameter learning (`parameterizer.py`)
 
-`validator_playground.ipynb` (or the exported `validator_playground.py`) performs this procedure. Main parameters:
+Defaults (edit at the top of the script if you need to change them):
+- Input model: `models/DBNfromAG.xdsl`
+- Output model: `models/DBNfromAG_learned.xdsl`
+- Traces: `traces/dbnLogs.csv`
+- Slices: `numSlices = 100`
 
-- `fileName`: The file containing the trained DBN.
-- `dataFileName`: The file containing the traces used for validation.
-- `numSlices`: The number of slices to consider.
-- `ext_ev_every_n_slices`: A list of evidence‑frequency values to test (e.g., `[1, 2, 5, 10]` means provide evidence every N slices, with N ranging from 1 to 10).
-- `algoTypeExact`: If `True`, use the exact algorithm; otherwise, use EPIS sampling. (Currently, EPIS may struggle to converge when `ext_ev_every_n_slices` includes `10`; results shown use the exact algorithm.)
-- `numFolds`: The number of folds in the k‑fold CV.
+Run a single learning pass:
 
-The output is a plot showing the metrics (mean and standard deviation over folds) versus the evidence frequency.
+```bash
+python3 parameterizer.py
+```
 
-### How to analyze the data traces distribution
+Run the benchmark (repeats learning multiple times and records time/RAM via `tracemalloc`):
 
-Because the traces are generated by a simulator, one might argue the trained DBN could learn to mimic the simulator rather than generalize the underlying process, especially if traces are very similar. Use `data_evaluator.ipynb` (or `data_evaluator.py`) to analyze the trace distributions.
+```bash
+python3 parameterizer.py --bench
+```
 
-Main parameters:
-- `dataFileName`: The file containing the traces to analyze.
-- `targetNodes`: List of node IDs whose completion‑time distribution will be analyzed.
-- `numSlices`: The number of slices to consider.
+Benchmark outputs:
+- `results/parameter_learning_benchmark.csv`
+- `results/parameter_learning_benchmark_aggregated.csv`
 
-The output is a histogram showing the distribution of completion slices (time slice index) for the specified target nodes. This may differ from completion duration, since it uses the absolute slice where the target node completes.
+### Inference experiments + benchmark (`experiment_analyzer.py`)
+
+This script loads `models/DBNfromAG_learned.xdsl` and runs the experiments defined in-code (currently an example with the single experiment named `No evidence`).
+By default it uses EPIS sampling (`algoTypeExact = False`); set `algoTypeExact = True` for the exact Lauritzen algorithm.
+
+Run inference + generate the posterior plot:
+
+```bash
+python3 experiment_analyzer.py
+```
+
+Output:
+- `plots/No evidence_targetNodes_Completed.pdf`
+
+Run the inference benchmark (repeat runs + aggregate avg/std time and peak RAM):
+
+```bash
+python3 experiment_analyzer.py --bench
+```
+
+Benchmark output:
+- `results/benchmark_inference_times.csv`
+
+### Validation vs evidence frequency (`validator_playground.py`, `validator.py`)
+
+`validator.py` contains the `Validator` class implementing 5-fold CV over the trace dataset.
+`validator_playground.py` wires it together for the experiment used in this project:
+- uses `models/DBNfromAG_learned.xdsl`
+- performs 5-folds CV on `traces/dbnLogs.csv` varying the  evidence frequency via `ext_ev_every_n_slices = [1, 2, 5, 10]`
+
+Run validation (computes and stores CSVs):
+
+```bash
+python3 validator_playground.py
+```
+
+Load already-computed CSVs and only re-generate the plot:
+
+```bash
+python3 validator_playground.py --stored
+```
+
+Outputs:
+- `results/5_folds-evEveryNSlices_*.csv`
+- `results/5_folds-full_results.csv`
+- `plots/validation_metrics_vs_evEveryNSlices.pdf`
+
+### Trace distribution analysis (`data_evaluator.py`)
+
+This script analyzes `traces/dbnLogs.csv` to:
+- plot completion-slice histograms for selected target nodes
+- compute per-node entropy of completion-slice distributions and export them to CSV
+
+Run:
+
+```bash
+python3 data_evaluator.py
+```
+
+Outputs:
+- `plots/completion_slice_distribution.pdf`
+- `results/node_entropy_values.csv`
