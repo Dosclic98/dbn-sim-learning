@@ -69,6 +69,11 @@ for metric, metricStd, marker in zip(metrics, metricsStd, markers):
     color = ax.lines[-1].get_color()
     # Add error bars
     plt.errorbar(full_results_df['evEveryN'], full_results_df[metric], yerr=full_results_df[metricStd], fmt='none', capsize=5, ecolor=color, color=color)
+    # Fill the area between the error bars for better visualization
+    ax.fill_between(full_results_df['evEveryN'], 
+                    full_results_df[metric] - full_results_df[metricStd], 
+                    full_results_df[metric] + full_results_df[metricStd], 
+                    alpha=0.2, color=color)
 plt.title(f'{numFolds}-fold Cross-Validation Metrics vs evidence frequency'.format(numFolds))
 plt.xlabel('Evidence frequency (every N slices)')
 plt.ylabel('Metric Value')

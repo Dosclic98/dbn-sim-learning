@@ -100,6 +100,7 @@ targetEntropies = [entropyDict[nodeId] for nodeId in targetNodes]
 avgEntropy = np.mean(targetEntropies)
 stdEntropy = np.std(targetEntropies)
 print(f"Average entropy for target nodes: {avgEntropy:.3f} ± {stdEntropy:.3f}")
+print(f"Average entropy for all nodes: {np.mean(list(entropyDict.values())):.3f} ± {np.std(list(entropyDict.values())):.3f}")
 # Save to a csv file
 entropyDf = pd.DataFrame({
     "NodeId": list(entropyDict.keys()),
