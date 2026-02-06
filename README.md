@@ -11,8 +11,8 @@ Host Specifications:
 - **OS**: Ubuntu 22.04.5 LTS (Jammy)
 - **Linux** kernel: 5.15.0-164-generic
 
-- **CPU**: Intel(R) Xeon(R) Gold 6418H (2 sockets × 16 cores @2.70GHz, 64 threads)
-- **RAM**: 62 GiB (swap: 8 GiB)
+- **CPU**: Intel(R) Xeon(R) Gold 6418H (32 logical cores @2.10GHz)
+- **RAM**: 64 GB (swap: 8 GB)
 
 Docker:
 - **Docker** Engine: 28.2.2
