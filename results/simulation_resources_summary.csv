@@ -1,0 +1,6 @@
+runs_requested,1000
+runs_successful,1000
+wallclock_s_mean,2.293635
+wallclock_s_stdev,0.395207
+max_rss_mb_mean,112.563
+max_rss_mb_stdev,1.802
