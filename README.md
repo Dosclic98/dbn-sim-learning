@@ -50,6 +50,9 @@ Or manually:
 sudo docker buildx build --progress=plain -t omnet ./docker/
 ```
 
+> [!WARNING]  
+> A stable internet connection is required during the build process to download the OMNeT++ source and all other dependencies. The build process may take around 5-10 minutes depending on your connection speed and host performance.
+
 ### 4) Run the container (with shared output folders)
 
 Using the helper script:
