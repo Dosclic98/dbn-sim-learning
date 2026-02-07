@@ -10,6 +10,8 @@ import time
 import pandas as pd
 import tracemalloc
 
+from seeding import seed_pysmile_em, set_global_seed
+
 
 argParser = argparse.ArgumentParser(add_help=True)
 argParser.add_argument(
@@ -18,6 +20,8 @@ argParser.add_argument(
     help="Run in benchmark mode (repeats learning multiple times and writes results/*.csv).",
 )
 args, _unknownArgs = argParser.parse_known_args()
+
+set_global_seed()
 
 # %%
 fileName = "models/DBNfromAG.xdsl"
@@ -71,7 +75,7 @@ def learnParams(net: pysmile.Network, fileName: str, randomize: bool = False, un
     ds.read_pandas_dataframe(train)
     matching = ds.match_network(net)
     em = EM()
-    em.set_seed(98)
+    seed_pysmile_em(em)
     em.set_relevance(relevance)
     em.set_randomize_parameters(randomize)
     em.set_uniformize_parameters(uniformize)

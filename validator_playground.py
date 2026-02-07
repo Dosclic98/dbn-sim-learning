@@ -10,10 +10,14 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import sys
 
+from seeding import seed_pysmile_network, set_global_seed
+
 # Enable layex backend for matplotlib
 plt.rcParams['text.usetex'] = True
 plt.rcParams['font.family'] = 'serif'
 plt.rcParams['font.size'] = 12
+
+set_global_seed()
 
 fileName = "models/DBNfromAG_learned.xdsl"
 dataFileName = "traces/dbnLogs.csv"
@@ -31,6 +35,7 @@ if '--stored' in sys.argv:
 net = pysmile.Network()
 net.read_file(fileName)
 net.set_slice_count(numSlices)
+seed_pysmile_network(net)
 if not algoTypeExact:
     # Set default inference algorithm and parameters
     net.set_bayesian_algorithm(pysmile.BayesianAlgorithmType.EPIS_SAMPLING)

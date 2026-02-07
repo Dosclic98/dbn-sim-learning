@@ -5,10 +5,14 @@ import pandas as pd
 import numpy as np
 import time
 
+from seeding import seed_pysmile_em, seed_pysmile_network, set_global_seed
+
 class Validator:
 
     def __init__(self, net: Network, fileName: str, fixedNodes: List[str] | List[int] | None,  evEveryN: int = 1):
+        set_global_seed()
         self.net: Network = net
+        seed_pysmile_network(self.net)
         self.fileName = fileName
         self.classNodes: set[str] = set()
         self.fixedNodes: List[str] | List[int] | None = fixedNodes 
@@ -29,7 +33,7 @@ class Validator:
         em = EM()
         em.set_uniformize_parameters(True)
         em.set_randomize_parameters(False)
-        em.set_seed(98)
+        seed_pysmile_em(em)
         df = pd.read_csv(self.fileName)
         if nFolds < 0 or nFolds > len(df):
             raise Exception("Invalid number of folds specified")

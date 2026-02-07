@@ -12,10 +12,14 @@ import matplotlib.pyplot as plt
 import time
 import tracemalloc
 
+from seeding import seed_pysmile_network, set_global_seed
+
 # Enable layex backend for matplotlib
 plt.rcParams['text.usetex'] = True
 plt.rcParams['font.family'] = 'serif'
 plt.rcParams['font.size'] = 12  
+
+set_global_seed()
 
 # %%
 fileName = "models/DBNfromAG_learned.xdsl"
@@ -60,6 +64,7 @@ experiments: list[Experiment] = [
 # %%
 net = pysmile.Network()
 net.read_file(fileName)
+seed_pysmile_network(net)
 if not algoTypeExact:
     # Set default inference algorithm and parameters
     net.set_bayesian_algorithm(pysmile.BayesianAlgorithmType.EPIS_SAMPLING)
