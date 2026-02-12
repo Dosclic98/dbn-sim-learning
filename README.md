@@ -1,4 +1,5 @@
-# dbn-sim-learning
+# Attack Graph driven Discrete Event Simulation for security assessment in Power Systems — Artifacts - SIGSIM-PADS 2026
+
 Repository for running Control Finite State Machine-based simulations in OMNeT++ and learning Dynamic Bayesian Network (DBN) parameters from generated data traces.
 
 ## Replicating the results (recommended: Docker)
