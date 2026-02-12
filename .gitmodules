@@ -1,0 +1,3 @@
+[submodule "MQTT_MMS_Medium"]
+	path = MQTT_MMS_Medium
+	url = https://github.com/Dosclic98/MQTT_MMS_Medium.git

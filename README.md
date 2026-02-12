@@ -28,6 +28,14 @@ git clone https://github.com/Dosclic98/dbn-sim-learning.git
 cd dbn-sim-learning
 ```
 
+This repository includes a git submodule under `MQTT_MMS_Medium/`, which contains the OMNeT++ simulation model executed by the experiments.
+
+If you did not clone with submodules, initialize them with:
+
+```bash
+git submodule update --init --recursive
+```
+
 ### 2) Add your `pysmile_license.py`
 
 You need a BayesFusion SMILE/pysmile Academic license.
