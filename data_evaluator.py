@@ -95,18 +95,29 @@ print("Entropy values for all nodes:")
 for nodeId, entropy in entropyDict.items():
     print(f"{nodeId}: {entropy:.3f}")
 
-# Compute average entropy for target nodes and standard deviation
-targetEntropies = [entropyDict[nodeId] for nodeId in targetNodes]
-avgEntropy = np.mean(targetEntropies)
-stdEntropy = np.std(targetEntropies)
-print(f"Average entropy for target nodes: {avgEntropy:.3f} ± {stdEntropy:.3f}")
-print(f"Average entropy for all nodes: {np.mean(list(entropyDict.values())):.3f} ± {np.std(list(entropyDict.values())):.3f}")
-# Save to a csv file
+# Compute average entropy and standard deviation for all nodes.
+allNodeEntropyValues = list(entropyDict.values())
+allNodesAvgEntropy = np.mean(allNodeEntropyValues)
+allNodesStdEntropy = np.std(allNodeEntropyValues)
+print(f"Average entropy for all nodes: {allNodesAvgEntropy:.3f} ± {allNodesStdEntropy:.3f}")
+# Save per-node values to CSV.
 entropyDf = pd.DataFrame({
     "NodeId": list(entropyDict.keys()),
     "Entropy": list(entropyDict.values())
 })
 entropyDf.to_csv("results/node_entropy_values.csv", index=False)
+
+# Save summary statistics to a dedicated CSV.
+entropySummaryDf = pd.DataFrame(
+    {
+        "Metric": [
+            "ALL_NODES_AVG",
+            "ALL_NODES_STD",
+        ],
+        "Value": [allNodesAvgEntropy, allNodesStdEntropy],
+    }
+)
+entropySummaryDf.to_csv("results/node_entropy_summary.csv", index=False)
 
 # %%
 # Plot entropy values

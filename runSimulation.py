@@ -35,7 +35,6 @@ OMNET_X_EXCLUDES = (
 
 OMNET_IMAGE_PATH = "../../inet4.5/images:../../simu5g/images"
 
-# Hardcoded paths to mirror runSimulation.sh
 OMNET_SETENV_PATH = "~/omnetpp/setenv"
 SIMULATIONS_DIR = "~/omnetpp-projects/MQTT_MMS_Medium/simulations"
 LOGS_DIR = "~/omnetpp-projects/MQTT_MMS_Medium/simulations/logs"
@@ -126,7 +125,6 @@ def startRun(
 ) -> subprocess.Popen:
     cmd = buildSimCommand(runId)
 
-    # Match runSimulation.sh behavior: source OMNeT++ env then run.
     # Use exec so the PID we monitor is the launched process group leader.
     bashCmd = (
         f"source {shlexQuote(str(omnetSetenv))} && "
@@ -186,8 +184,8 @@ def terminateProcessTree(pid: int, graceS: float = 5.0) -> None:
 def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Python equivalent of runSimulation.sh with per-run peak RAM (MB) and wall-clock time monitoring. "
-            "Only -r (runs) and -p (parallelism) are accepted; other paths are hardcoded to match the bash script."
+            "Run parallel OMNeT++ simulation runs with per-run peak RAM (MB) and wall-clock time monitoring. "
+            "Only -r (runs) and -p (parallelism) are accepted."
         )
     )
     parser.add_argument("-r", type=int, required=True, help="Number of runs")
@@ -291,7 +289,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     print("Simulation runs terminated")
     print("Aggregating DBN traces...")
 
-    # Run aggregator.sh as in runSimulation.sh
+    # Run aggregator.sh to obtain the final traces
     aggregatorCmd = [
         str(simulationsDir / "./aggregator.sh"),
         "-p",
