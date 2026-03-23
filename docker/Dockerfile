@@ -88,7 +88,7 @@ RUN git clone https://github.com/Dosclic98/dbn-sim-learning.git
 WORKDIR ${HOME}/dbn-sim-learning
 RUN mkdir -p models plots results traces
 RUN chmod -R 765 runSimulation.sh || true
-RUN python3 -m pip install -r requirements.txt
+RUN python3 -m pip install -r requirements-lock.txt
 
 WORKDIR /home/simulation/dbn-sim-learning
 

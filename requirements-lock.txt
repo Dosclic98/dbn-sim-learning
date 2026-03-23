@@ -1,0 +1,12 @@
+--index-url https://pypi.org/simple
+--extra-index-url https://support.bayesfusion.com/pysmile-A/
+
+latex==0.7.0
+matplotlib==3.10.7
+numpy==2.2.6
+pandas==2.3.3
+psutil==7.1.1
+pysmile==2.4.0
+scipy==1.15.3
+seaborn==0.13.2
+
