@@ -28,28 +28,36 @@ Using the provided Dockerfile, you can build a container that includes all neces
 - x86_64 CPU architecture
 - 32 GB of RAM
 - At least 20 GB of free disk space for the container, simulation outputs, and results
-- Linux system with Docker installed (see the specific version we used below)
-- In this README we assume that you need to acquire superuser privileges (using `sudo`) to run Docker commands; if your setup uses the `docker` group/rootless Docker, manually remove `sudo` from the commands
+- Linux system with Docker, `sudo`, `bash` and `git` installed (see the specific versions we used below)
+
+> [!NOTE]
+> In this README we assume that you need to acquire superuser privileges (using `sudo`) to run Docker commands; if your setup uses the `docker` group/rootless Docker, manually remove `sudo` from the commands
 
 ### Reference host specifications (used to obtain the reported results)
 
 Hardware Specifications:
 - **OS**: Ubuntu 22.04.5 LTS (Jammy)
 - **Kernel**: 5.15.0-164-generic
-
 - **CPU**: Intel(R) Xeon(R) Gold 6418H (32 logical cores @2.10GHz)
 - **RAM**: 64 GB (swap: 8 GB)
 
 Software Specifications:
+- **Sudo**: 1.9.9
+- **GNU Bash**: 5.1.16
+- **Git**: 2.34.1
 - **Docker Client & Server Engine**: 28.2.2
 - **Docker buildx**: 0.21.3
 
 ### 1) Clone the repository locally
 
 ```bash
-git clone https://github.com/Dosclic98/dbn-sim-learning.git
+git clone --recurse-submodules https://github.com/Dosclic98/dbn-sim-learning.git
 cd dbn-sim-learning
 ```
+
+> [!NOTE]
+> All scripts were tested by running them from the following path: `dbn-sim-learning/`.
+> If you downloaded the repository as a ZIP or tar.gz file, make sure to extract it with the full folder structure intact.
 
 This repository includes a git submodule under `MQTT_MMS_Medium/`, which contains the OMNeT++ simulation model executed by the experiments.
 
@@ -63,9 +71,30 @@ git submodule update --init --recursive
 
 You need a BayesFusion SMILE/pysmile Academic license.
 
-- Retrieve your license from [BayesFusion support pages](https://download.bayesfusion.com/files.html?category=Academia) (Academic program) and insert the `pysmile_license.py` file in the repository root.
+1. Navigate to the [BayesFusion support page](https://download.bayesfusion.com/files.html?category=Academia)  and log in or create an account using your academic email.
+2. Request an Academic license by clicking on the following button in the SMILE section:
 
-Note: `pysmile_license.py` is intentionally ignored by git via `.gitignore`.
+   ![BayesFusion Academic License Request Button](images/pysmile_academic_img_1.png)
+
+3. Fill in the form specifying your academic institution and ticking the necessary checkboxes, then click the "Get License" button.
+
+   ![BayesFusion Academic License Request Form](images/pysmile_academic_img_2.png)
+
+4. Unzip the archive that will be immediately downloaded and locate the `pysmile_license.py` file inside it and insert the `pysmile_license.py` file in the repository root.
+
+```
+dbn-sim-learning/
+├── docker/
+├── models/
+├── plots/
+├── results/
+├── traces/
+├── MQTT_MMS_Medium/
+├── LICENSE
+├── README.md
+├── pysmile_license.py  <-- insert your pysmile_license.py here
+├── ...
+```
 
 ### 3) Build the container
 
