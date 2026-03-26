@@ -145,11 +145,11 @@ sudo docker run --rm -it \
 From `/home/simulation/dbn-sim-learning` (container workdir), run:
 
 ```bash
-python3 replicate_results.py -r 1000 -p "$(nproc)"
+./replicateResults.sh
 ```
 
-This will:
-- run the simulation batch (with resource monitoring)
+This script, by calling `replicate_results.py`, will:
+- run the simulation batch and trace aggregation (via `runSimulation.py`) with 1000 runs and using all but 2 of the available cores for parallelization
 - run `parameterizer.py` in normal and benchmark mode
 - run `data_evaluator.py`
 - run `experiment_analyzer.py` in normal and benchmark mode

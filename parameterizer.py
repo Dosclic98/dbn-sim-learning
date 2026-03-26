@@ -120,8 +120,7 @@ def fixDiscrParams(net: pysmile.Network, tacticsDict: dict, analyticsDict: dict,
 # %%
 if benchmarkLearning:
     times = []
-    perfDf = pd.DataFrame(columns=["Run", "TimeSeconds", "MemoryPeakBytes"])
-    aggrPerfDf = pd.DataFrame(columns=["NumReps", "AvgTimeSeconds", "StdTimeSeconds", "AvgMemoryPeakBytes", "StdMemoryPeakBytes"])
+    perfRows = []
     for rep in range(numReps):
         print(f"--- Benchmarking parameter learning: Run {rep + 1}/{numReps} ---")
         startTime = time.time()
@@ -134,19 +133,20 @@ if benchmarkLearning:
         endTime = time.time()
         print(f"Parameter learning completed in {endTime - startTime:.2f} seconds.")
         times.append(endTime - startTime)
-        perfDf = pd.concat([perfDf, pd.DataFrame({
-            "Run": [rep + 1],
-            "TimeSeconds": [endTime - startTime],
-            "MemoryPeakMBytes": [peak * 1e-6],
-        })], ignore_index=True) 
+        perfRows.append({
+            "Run": rep + 1,
+            "TimeSeconds": endTime - startTime,
+            "MemoryPeakMBytes": peak * 1e-6,
+        })
+    perfDf = pd.DataFrame(perfRows)
     perfDf.to_csv("results/parameter_learning_benchmark.csv", index=False)
-    aggrPerfDf = pd.concat([aggrPerfDf, pd.DataFrame({
+    aggrPerfDf = pd.DataFrame({
         "NumReps": [numReps],
         "AvgTimeSeconds": [np.mean(times)],
         "StdTimeSeconds": [np.std(times)],
         "AvgMemoryPeakMBytes": [perfDf["MemoryPeakMBytes"].mean()],
         "StdMemoryPeakMBytes": [perfDf["MemoryPeakMBytes"].std()],
-    })], ignore_index=True)
+    })
     aggrPerfDf.to_csv("results/parameter_learning_benchmark_aggregated.csv", index=False)
     print(f"Average parameter learning time over {numReps} runs: {np.mean(times):.2f} ± {np.std(times):.2f} seconds")
     print(f"Average peak memory usage over {numReps} runs: {perfDf['MemoryPeakMBytes'].mean():.2f} ± {perfDf['MemoryPeakMBytes'].std():.2f} MBytes")
