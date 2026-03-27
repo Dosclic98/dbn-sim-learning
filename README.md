@@ -22,7 +22,7 @@ This repository is licensed under the GNU General Public License v3.0 (GPL-3.0).
 
 ## Replicating the results (recommended: Docker)
 
-Using the provided Dockerfile, you can build a container that includes all necessary dependencies to run the full pipeline (simulation, parameterization, validation, and analysis). Setting up the simulation environment manually can impact the automatic repricability of the results due to possible configuration differences, so using Docker is the recommended approach.
+Using the provided Dockerfile, you can build a container that includes all necessary dependencies to run the full pipeline (simulation, parameterization, validation, and analysis). Setting up the simulation environment manually can impact the automatic replicability of the results due to possible configuration differences, so using Docker is the recommended approach.
 
 ### Requirements
 - x86_64 CPU architecture
