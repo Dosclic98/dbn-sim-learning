@@ -308,4 +308,4 @@ Outputs:
 This repository is licensed under the GNU General Public License v3.0 (GPL-3.0). See the [LICENSE](LICENSE) file for details.
 
 ## Artifact Identifier
-DOI: [10.5281/zenodo.19248717](https://doi.org/10.5281/zenodo.19248717)
+DOI: [10.5281/zenodo.19248716](https://doi.org/10.5281/zenodo.19248716)
