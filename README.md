@@ -17,9 +17,6 @@ Accepted at ACM SIGSIM PADS 2026, June 24-26, 2026, Vienna, Austria.
 - Giovanna Dondossola &rarr; [giovanna.dondossola@rse-web.it](mailto:giovanna.dondossola@rse-web.it)
 - Roberta Terruggia &rarr; [roberta.terruggia@rse-web.it](mailto:roberta.terruggia@rse-web.it)
 
-## License
-This repository is licensed under the GNU General Public License v3.0 (GPL-3.0). See the [LICENSE](LICENSE) file for details.
-
 ## Replicating the results (recommended: Docker)
 
 Using the provided Dockerfile, you can build a container that includes all necessary dependencies to run the full pipeline (simulation, parameterization, validation, and analysis). Setting up the simulation environment manually can impact the automatic replicability of the results due to possible configuration differences, so using Docker is the recommended approach.
@@ -306,3 +303,9 @@ Outputs:
 - `plots/completion_slice_distribution.pdf`
 - `results/node_entropy_values.csv`
 - `results/node_entropy_summary.csv`
+
+## License
+This repository is licensed under the GNU General Public License v3.0 (GPL-3.0). See the [LICENSE](LICENSE) file for details.
+
+## Artifact Identifier
+DOI: [10.5281/zenodo.19248717](https://doi.org/10.5281/zenodo.19248717)
