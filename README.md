@@ -1,9 +1,9 @@
-# Attack Graph driven Discrete Event Simulation for security assessment in Power Systems — Artifacts - ACM SIGSIM PADS 2026
+# Attack Graph driven Discrete Event Simulation for Security Assessment in Power Systems — Artifacts - ACM SIGSIM PADS 2026
 
 Repository for running Control Finite State Machine-based simulations in OMNeT++ and learning Dynamic Bayesian Network (DBN) parameters from generated data traces.
 
 The results reproduced by this repository are reported in the paper:
-"Attack Graph driven Discrete Event Simulation for security assessment in Power Systems"
+"Attack Graph driven Discrete Event Simulation for Security Assessment in Power Systems"
 
 Accepted at ACM SIGSIM PADS 2026, June 24-26, 2026, Vienna, Austria.
 
