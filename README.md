@@ -17,6 +17,30 @@ Accepted at ACM SIGSIM PADS 2026, June 24-26, 2026, Vienna, Austria.
 - Giovanna Dondossola &rarr; [giovanna.dondossola@rse-web.it](mailto:giovanna.dondossola@rse-web.it)
 - Roberta Terruggia &rarr; [roberta.terruggia@rse-web.it](mailto:roberta.terruggia@rse-web.it)
 
+## How to cite us
+
+If you use this work in your research, please cite the following paper:
+
+```
+@inproceedings{10.1145/3806789.3810256,
+	author = {Savarro, Davide and Cerotti, Davide and Codetta Raiteri, Daniele and Egidi, Lavinia and Franceschinis, Giuliana and Portinale, Luigi and Dondossola, Giovanna and Terruggia, Roberta},
+	title = {Attack Graph driven Discrete Event Simulation for Security Assessment in Power Systems},
+	year = {2026},
+	isbn = {9798400726484},
+	publisher = {Association for Computing Machinery},
+	address = {New York, NY, USA},
+	url = {https://doi.org/10.1145/3806789.3810256},
+	doi = {10.1145/3806789.3810256},
+	abstract = {As power grids transition into decentralized Cyber-Physical Power Systems, the digitalization of legacy devices has dramatically multiplied the potential entry points for cyber adversaries. To accurately assess these threats, security models must capture both detailed attack steps and network timing effects. However, obtaining real-world cyber incident data to parameterize these models is rarely possible due to strict privacy and confidentiality constraints within utility companies. To overcome this limitation, we present a simulation-based framework that integrates Attack Graphs (AGs) with the OMNeT++ Discrete Event Simulation environment and Dynamic Bayesian Networks (DBNs). Attack step logic is modeled through Control Finite State Machines, allowing for dynamic interactions between attacker behavior and simulated network components. The simulation automatically generates time-series data used to train AG-derived DBNs used to answer probabilistic queries on attack progression. We present a case study on a Distributed Energy Resource cyberattack which demonstrates that the framework captures complex temporal dependencies and maintains high predictive accuracy supporting cybersecurity assessment for critical energy infrastructures. The code and models implemented in this work are available here: https://github.com/Dosclic98/dbn-sim-learning.git.},
+	booktitle = {Proceedings of the 40th ACM SIGSIM International Conference on Principles of Advanced Discrete Simulation},
+	pages = {139–151},
+	numpages = {13},
+	keywords = {Cyber-Physical Power Systems; Distributed Energy Resources; Cybersecurity simulation; Attack Graphs; Dynamic Bayesian Networks; Discrete Event Simulation; Probabilistic risk assessment;},
+	location = {Vienna, Austria},
+	series = {SIGSIM-PADS '26}
+}
+```
+
 ## Replicating the results (recommended: Docker)
 
 Using the provided Dockerfile, you can build a container that includes all necessary dependencies to run the full pipeline (simulation, parameterization, validation, and analysis). Setting up the simulation environment manually can impact the automatic replicability of the results due to possible configuration differences, so using Docker is the recommended approach.
